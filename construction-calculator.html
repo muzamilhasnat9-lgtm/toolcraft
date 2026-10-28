@@ -1,0 +1,2475 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Construction Material Calculator Suite Pro</title>
+    <meta name="description" content="Professional construction material calculator suite with 10+ tools for accurate estimations and cost analysis." />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏗️</text></svg>" />
+
+    <!-- Bootstrap 5 + Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- jsPDF + html2canvas for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
+    </script>
+
+    <style>
+        /* ───── CSS Variables / Theming ───── */
+        :root {
+            --bg-body: #f4f6f9;
+            --bg-sidebar: #0f172a;
+            --bg-sidebar-hover: #1e293b;
+            --bg-card: #ffffff;
+            --bg-card-header: #f8fafc;
+            --text-primary: #0f172a;
+            --text-secondary: #334155;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.06);
+            --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.10);
+            --accent: #2563eb;
+            --accent-light: #dbeafe;
+            --accent-dark: #1d4ed8;
+            --success: #16a34a;
+            --warning: #f59e0b;
+            --danger: #dc2626;
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-bs-theme="dark"] {
+            --bg-body: #0d1117;
+            --bg-sidebar: #161b22;
+            --bg-sidebar-hover: #1f2937;
+            --bg-card: #1c2333;
+            --bg-card-header: #252d3f;
+            --text-primary: #e6edf3;
+            --text-secondary: #b0b8c4;
+            --text-muted: #8b949e;
+            --border-color: #30363d;
+            --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
+            --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.6);
+            --accent-light: #1e293b;
+        }
+
+        /* ───── Global Reset ───── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-body);
+            color: var(--text-primary);
+            transition: background var(--transition), color var(--transition);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ───── Scrollbar ───── */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--text-muted);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+
+        /* ───── Sidebar ───── */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 280px;
+            background: var(--bg-sidebar);
+            color: #fff;
+            z-index: 1050;
+            overflow-y: auto;
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .sidebar-brand {
+            padding: 24px 22px 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .sidebar-brand .brand-icon {
+            width: 46px;
+            height: 46px;
+            background: var(--accent);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .sidebar-brand h5 {
+            font-weight: 700;
+            font-size: 18px;
+            margin: 0;
+            letter-spacing: -0.3px;
+            line-height: 1.2;
+        }
+        .sidebar-brand h5 small {
+            font-weight: 400;
+            font-size: 12px;
+            opacity: 0.7;
+            display: block;
+        }
+
+        .sidebar-nav {
+            padding: 16px 12px;
+            flex: 1;
+        }
+
+        .sidebar-nav .nav-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: rgba(255, 255, 255, 0.35);
+            padding: 12px 12px 6px;
+            font-weight: 600;
+        }
+
+        .sidebar-nav .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 11px 16px;
+            border-radius: var(--radius-sm);
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all var(--transition);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 2px;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+            position: relative;
+        }
+
+        .sidebar-nav .nav-item:hover {
+            background: var(--bg-sidebar-hover);
+            color: #fff;
+        }
+        .sidebar-nav .nav-item.active {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35);
+        }
+        .sidebar-nav .nav-item i {
+            width: 22px;
+            text-align: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        .sidebar-nav .nav-item .badge-nav {
+            margin-left: auto;
+            background: rgba(255, 255, 255, 0.12);
+            padding: 2px 10px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .sidebar-nav .nav-item .favorite-star {
+            margin-left: auto;
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 14px;
+            transition: color var(--transition);
+            cursor: pointer;
+        }
+        .sidebar-nav .nav-item .favorite-star.active {
+            color: #fbbf24;
+        }
+
+        .sidebar-footer {
+            padding: 16px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sidebar-footer .theme-toggle {
+            background: rgba(255, 255, 255, 0.08);
+            border: none;
+            color: #fff;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .sidebar-footer .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* ───── Main Content ───── */
+        .main-content {
+            margin-left: 280px;
+            padding: 28px 32px 40px;
+            min-height: 100vh;
+            transition: margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ───── Top Bar ───── */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .topbar .page-title {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--text-primary);
+        }
+        .topbar .page-title small {
+            font-weight: 400;
+            font-size: 16px;
+            color: var(--text-muted);
+        }
+
+        .topbar .top-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .topbar .top-actions .btn-outline {
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 500;
+            transition: all var(--transition);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .topbar .top-actions .btn-outline:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-light);
+        }
+
+        .topbar .top-actions .btn-accent {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 8px 20px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 600;
+            transition: all var(--transition);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .topbar .top-actions .btn-accent:hover {
+            background: var(--accent-dark);
+            transform: translateY(-1px);
+        }
+
+        /* ───── Mobile hamburger ───── */
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        /* ───── Dashboard Home ───── */
+        .dashboard-home {
+            display: block;
+        }
+        .dashboard-home .stat-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            padding: 20px 24px;
+            box-shadow: var(--shadow-card);
+            transition: all var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .dashboard-home .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+        .dashboard-home .stat-card .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+        .dashboard-home .stat-card .stat-title {
+            font-weight: 600;
+            font-size: 16px;
+            color: var(--text-primary);
+        }
+        .dashboard-home .stat-card .stat-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .dashboard-home .stat-card .stat-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            font-size: 11px;
+            background: var(--accent-light);
+            color: var(--accent);
+            padding: 2px 10px;
+            border-radius: 100px;
+            font-weight: 600;
+        }
+
+        /* ───── Calculator Cards ───── */
+        .calc-container {
+            display: none;
+            animation: fadeSlide 0.4s ease;
+        }
+        .calc-container.active {
+            display: block;
+        }
+
+        @keyframes fadeSlide {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .calc-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-card);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: all var(--transition);
+            margin-bottom: 24px;
+        }
+
+        .calc-card:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .calc-card .card-header-custom {
+            padding: 20px 28px;
+            background: var(--bg-card-header);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .calc-card .card-header-custom .header-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--accent-light);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 20px;
+        }
+
+        .calc-card .card-header-custom h5 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .calc-card .card-header-custom h5 small {
+            font-weight: 400;
+            font-size: 13px;
+            color: var(--text-muted);
+            display: block;
+        }
+
+        .calc-card .card-body-custom {
+            padding: 24px 28px 28px;
+        }
+
+        /* ───── Form elements ───── */
+        .form-control,
+        .form-select {
+            background: var(--bg-body);
+            border: 1.5px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all var(--transition);
+        }
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+            background: var(--bg-body);
+            color: var(--text-primary);
+        }
+        .form-control.is-invalid {
+            border-color: var(--danger);
+        }
+        .form-control.is-invalid:focus {
+            box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.12);
+        }
+        .form-control::placeholder {
+            color: var(--text-muted);
+        }
+        .form-label {
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+        .form-text {
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        /* ───── Input groups with unit ───── */
+        .input-group .form-control {
+            border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+        }
+        .input-group .input-group-text {
+            background: var(--bg-card-header);
+            border: 1.5px solid var(--border-color);
+            border-left: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        /* ───── Result boxes ───── */
+        .result-box {
+            background: var(--bg-body);
+            border-radius: var(--radius-sm);
+            padding: 20px 24px;
+            margin-top: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .result-box .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .result-box .result-item:last-child {
+            border-bottom: none;
+        }
+        .result-box .result-item .label {
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .result-box .result-item .value {
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--accent);
+        }
+        .result-box .result-item .value.success {
+            color: var(--success);
+        }
+        .result-box .result-item .value.warning {
+            color: var(--warning);
+        }
+
+        .result-box .cost-item {
+            border-top: 2px dashed var(--border-color);
+            padding-top: 12px;
+            margin-top: 8px;
+        }
+        .result-box .cost-item .label {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .result-box .cost-item .value {
+            color: var(--success);
+            font-size: 20px;
+        }
+
+        /* ───── History ───── */
+        .history-list {
+            max-height: 350px;
+            overflow-y: auto;
+        }
+        .history-item {
+            padding: 12px 16px;
+            background: var(--bg-body);
+            border-radius: var(--radius-sm);
+            margin-bottom: 6px;
+            border-left: 3px solid var(--accent);
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .history-item .h-time {
+            color: var(--text-muted);
+            font-size: 11px;
+        }
+        .history-item .h-detail {
+            color: var(--text-secondary);
+        }
+        .history-item .h-delete {
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: all var(--transition);
+        }
+        .history-item .h-delete:hover {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        /* ───── Toast ───── */
+        .toast-container-custom {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .toast-custom {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            padding: 14px 24px;
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-hover);
+            border: 1px solid var(--border-color);
+            font-size: 14px;
+            font-weight: 500;
+            animation: slideUp 0.4s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 240px;
+            max-width: 420px;
+        }
+        .toast-custom i {
+            font-size: 20px;
+        }
+        .toast-custom .toast-success i {
+            color: var(--success);
+        }
+        .toast-custom .toast-error i {
+            color: var(--danger);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ───── Responsive ───── */
+        @media (max-width: 991px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 20px 16px 30px;
+            }
+            .hamburger {
+                display: block;
+            }
+            .topbar .page-title {
+                font-size: 20px;
+            }
+            .topbar .page-title small {
+                font-size: 14px;
+            }
+            .calc-card .card-header-custom {
+                padding: 16px 20px;
+            }
+            .calc-card .card-body-custom {
+                padding: 18px 20px 22px;
+            }
+            .result-box {
+                padding: 16px 18px;
+            }
+            .result-box .result-item .value {
+                font-size: 16px;
+            }
+            .dashboard-home .stat-card {
+                padding: 16px 18px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .topbar .top-actions .btn-outline span,
+            .topbar .top-actions .btn-accent span {
+                display: none;
+            }
+            .topbar .top-actions .btn-outline,
+            .topbar .top-actions .btn-accent {
+                padding: 8px 12px;
+            }
+            .sidebar {
+                width: 260px;
+            }
+            .sidebar-brand h5 {
+                font-size: 16px;
+            }
+            .calc-card .card-body-custom {
+                padding: 14px 16px 18px;
+            }
+            .result-box {
+                padding: 12px 14px;
+            }
+        }
+
+        /* ───── Print styles ───── */
+        @media print {
+            .sidebar,
+            .hamburger,
+            .top-actions,
+            .sidebar-footer {
+                display: none !important;
+            }
+            .main-content {
+                margin-left: 0 !important;
+                padding: 20px !important;
+            }
+            .calc-card {
+                break-inside: avoid;
+                border: 1px solid #ddd !important;
+                box-shadow: none !important;
+            }
+            .calc-card .card-header-custom {
+                background: #f5f5f5 !important;
+            }
+            .result-box {
+                background: #f9f9f9 !important;
+            }
+            body {
+                background: #fff !important;
+                color: #000 !important;
+            }
+            .toast-container-custom {
+                display: none !important;
+            }
+            .dashboard-home .stat-card {
+                border: 1px solid #ddd !important;
+                box-shadow: none !important;
+            }
+        }
+
+        /* ───── Misc ───── */
+        .gap-2 {
+            gap: 0.5rem;
+        }
+        .gap-3 {
+            gap: 1rem;
+        }
+        .fw-600 {
+            font-weight: 600;
+        }
+        .text-accent {
+            color: var(--accent);
+        }
+        .bg-accent-light {
+            background: var(--accent-light);
+        }
+        .cursor-pointer {
+            cursor: pointer;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1040;
+        }
+        .overlay.show {
+            display: block;
+        }
+
+        /* Tooltip custom */
+        .tooltip-inner {
+            background: var(--bg-sidebar);
+            color: #fff;
+        }
+        .bs-tooltip-auto[data-popper-placement^=top] .tooltip-arrow::before {
+            border-top-color: var(--bg-sidebar);
+        }
+
+        /* Favorite star in sidebar */
+        .sidebar-nav .nav-item .favorite-star:hover {
+            color: #fbbf24;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ───── OVERLAY (mobile) ───── -->
+    <div class="overlay" id="sidebarOverlay"></div>
+
+    <!-- ───── SIDEBAR ───── -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon"><i class="fas fa-helmet-safety"></i></div>
+            <h5>ConstructCalc <small>Material Suite Pro</small></h5>
+        </div>
+
+        <div class="sidebar-nav">
+            <div class="nav-label">Calculators</div>
+
+            <button class="nav-item active" data-calc="home">
+                <i class="fas fa-house"></i> Dashboard
+                <span class="badge-nav">Home</span>
+            </button>
+            <button class="nav-item" data-calc="brick">
+                <i class="fas fa-cubes"></i> Brick Calculator
+                <span class="badge-nav">B</span>
+                <span class="favorite-star" data-calc="brick"><i class="fas fa-star"></i></span>
+            </button>
+            <button class="nav-item" data-calc="concrete">
+                <i class="fas fa-database"></i> Concrete Calculator
+                <span class="badge-nav">C</span>
+                <span class="favorite-star" data-calc="concrete"><i class="fas fa-star"></i></span>
+            </button>
+            <button class="nav-item" data-calc="steel">
+                <i class="fas fa-weight-scale"></i> Steel Weight
+                <span class="badge-nav">S</span>
+                <span class="favorite-star" data-calc="steel"><i class="fas fa-star"></i></span>
+            </button>
+            <button class="nav-item" data-calc="paint">
+                <i class="fas fa-paint-roller"></i> Paint Calculator
+                <span class="badge-nav">P</span>
+                <span class="favorite-star" data-calc="paint"><i class="fas fa-star"></i></span>
+            </button>
+            <button class="nav-item" data-calc="tile">
+                <i class="fas fa-th-large"></i> Tile Calculator
+                <span class="badge-nav">T</span>
+                <span class="favorite-star" data-calc="tile"><i class="fas fa-star"></i></span>
+            </button>
+            <button class="nav-item" data-calc="cement">
+                <i class="fas fa-sack"></i> Cement Bag
+                <span class="badge-nav">CB</span>
+                <span class="favorite-star" data-calc="cement"><i class="fas fa-star"></i></span>
+            </button>
+            <button class="nav-item" data-calc="plaster">
+                <i class="fas fa-eraser"></i> Plaster Calculator
+                <span class="badge-nav">PL</span>
+                <span class="favorite-star" data-calc="plaster"><i class="fas fa-star"></i></span>
+            </button>
+            <button class="nav-item" data-calc="excavation">
+                <i class="fas fa-tractor"></i> Excavation
+                <span class="badge-nav">E</span>
+                <span class="favorite-star" data-calc="excavation"><i class="fas fa-star"></i></span>
+            </button>
+            <button class="nav-item" data-calc="block">
+                <i class="fas fa-border-all"></i> Block Calculator
+                <span class="badge-nav">BL</span>
+                <span class="favorite-star" data-calc="block"><i class="fas fa-star"></i></span>
+            </button>
+            <button class="nav-item" data-calc="converter">
+                <i class="fas fa-arrow-right-arrow-left"></i> Unit Converter
+                <span class="badge-nav">U</span>
+                <span class="favorite-star" data-calc="converter"><i class="fas fa-star"></i></span>
+            </button>
+        </div>
+
+        <div class="sidebar-footer">
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon" id="themeIcon"></i>
+                <span id="themeLabel">Dark</span>
+            </button>
+            <span style="font-size:11px;opacity:0.3;">v3.0 Pro</span>
+        </div>
+    </nav>
+
+    <!-- ───── MAIN CONTENT ───── -->
+    <main class="main-content" id="mainContent">
+
+        <!-- Top Bar -->
+        <div class="topbar">
+            <div class="d-flex align-items-center gap-3">
+                <button class="hamburger" id="hamburgerBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div>
+                    <div class="page-title" id="pageTitle">Dashboard <small>Overview &amp; quick access</small></div>
+                </div>
+            </div>
+            <div class="top-actions">
+                <button class="btn-outline" id="historyBtn">
+                    <i class="fas fa-clock-rotate-left"></i>
+                    <span>History</span>
+                </button>
+                <button class="btn-outline" id="exportPdfBtn">
+                    <i class="fas fa-file-pdf"></i>
+                    <span>PDF</span>
+                </button>
+                <button class="btn-outline" id="printBtn">
+                    <i class="fas fa-print"></i>
+                    <span>Print</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ─── DASHBOARD HOME ─── -->
+        <div class="calc-container active" id="calc-home">
+            <div class="row g-4" id="dashboardGrid">
+                <!-- Stat cards will be populated by JS -->
+            </div>
+            <div class="mt-4 text-muted text-center">
+                <small>Click any card to open the calculator. <i class="fas fa-star text-warning"></i> indicates favorites.</small>
+            </div>
+        </div>
+
+        <!-- ─── CALCULATOR CONTAINERS ─── -->
+        <!-- 1. BRICK CALCULATOR -->
+        <div class="calc-container" id="calc-brick">
+            <div class="calc-card">
+                <div class="card-header-custom">
+                    <div class="header-icon"><i class="fas fa-cubes"></i></div>
+                    <h5>Brick Calculator <small>Estimate total bricks including wastage &amp; cost</small></h5>
+                </div>
+                <div class="card-body-custom">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label">Wall Length (ft)</label>
+                            <input type="number" class="form-control" id="brickLength" value="20" step="0.1" min="0.01" data-bs-toggle="tooltip" title="Enter the total length of the wall in feet." />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Wall Height (ft)</label>
+                            <input type="number" class="form-control" id="brickHeight" value="10" step="0.1" min="0.01" data-bs-toggle="tooltip" title="Enter the height of the wall in feet." />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Brick Size</label>
+                            <select class="form-select" id="brickSize" data-bs-toggle="tooltip" title="Select the nominal brick size.">
+                                <option value="8">8″ × 4″ × 4″ (Standard)</option>
+                                <option value="7.5">7.5″ × 3.5″ × 3.5″</option>
+                                <option value="9">9″ × 4.5″ × 3″</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Mortar Thickness (in)</label>
+                            <input type="number" class="form-control" id="brickMortar" value="0.5" step="0.1" min="0" data-bs-toggle="tooltip" title="Thickness of mortar joint in inches." />
+                        </div>
+                    </div>
+                    <div class="row g-3 mt-1">
+                        <div class="col-md-3">
+                            <label class="form-label">Wastage</label>
+                            <select class="form-select" id="brickWastage" data-bs-toggle="tooltip" title="Add extra bricks for breakage and cutting.">
+                                <option value="0">0% (None)</option>
+                                <option value="5" selected>5% (Standard)</option>
+                                <option value="10">10% (Moderate)</option>
+                                <option value="15">15% (High)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Cost per Brick (₹)</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="brickCost" value="8" step="0.5" min="0" data-bs-toggle="tooltip" title="Enter the unit price per brick." />
+                                <span class="input-group-text">₹</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 d-flex align-items-end gap-2">
+                            <button class="btn btn-accent" onclick="calculateBrick()">
+                                <i class="fas fa-calculator"></i> Calculate
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="clearCalc('brick')">
+                                <i class="fas fa-undo"></i> Clear
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="resetDefaults('brick')">
+                                <i class="fas fa-rotate-left"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="result-box" id="brickResult">
+                        <div class="result-item">
+                            <span class="label">Wall Area</span>
+                            <span class="value" id="brickWallArea">—</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="label">Bricks per Sq. Ft.</span>
+                            <span class="value" id="brickPerSqft">—</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="label">Total Bricks (no wastage)</span>
+                            <span class="value" id="brickTotal">—</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="label">Total Bricks (with wastage)</span>
+                            <span class="value success" id="brickTotalWaste">—</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="label">Wastage Added</span>
+                            <span class="value warning" id="brickWasteAdded">—</span>
+                        </div>
+                        <div class="result-item cost-item">
+                            <span class="label">Estimated Cost</span>
+                            <span class="value success" id="brickCostTotal">—</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. CONCRETE CALCULATOR -->
+        <div class="calc-container" id="calc-concrete">
+            <div class="calc-card">
+                <div class="card-header-custom">
+                    <div class="header-icon"><i class="fas fa-database"></i></div>
+                    <h5>Concrete Calculator <small>Volume &amp; material quantities (M20 mix) + cost</small></h5>
+                </div>
+                <div class="card-body-custom">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label">Length (ft)</label>
+                            <input type="number" class="form-control" id="concreteLength" value="10" step="0.1" min="0.01" data-bs-toggle="tooltip" title="Length of the concrete slab/column." />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Width (ft)</label>
+                            <input type="number" class="form-control" id="concreteWidth" value="10" step="0.1" min="0.01" data-bs-toggle="tooltip" title="Width of the concrete element." />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Depth (ft)</label>
+                            <input type="number" class="form-control" id="concreteDepth" value="0.5" step="0.1" min="0.01" data-bs-toggle="tooltip" title="Depth (thickness) in feet." />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Mix Ratio</label>
+                            <select class="form-select" id="concreteMix" data-bs-toggle="tooltip" title="Select concrete mix proportion.">
+                                <option value="1:1.5:3">M20 (1:1.5:3)</option>
+                                <option value="1:2:4">M15 (1:2:4)</option>
+                                <option value="1:3:6">M10 (1:3:6)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row g-3 mt-1">
+                        <div class="col-md-3">
+                            <label class="form-label">Cost per m³ (₹)</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="concreteCost" value="4500" step="100" min="0" data-bs-toggle="tooltip" title="Enter the price per cubic meter of ready-mix concrete." />
+                                <span class="input-group-text">₹</span>
+                            </div>
+                        </div>
+                        <div class="col-md-9 d-flex align-items-end gap-2">
+                            <button class="btn btn-accent" onclick="calculateConcrete()">
+                                <i class="fas fa-calculator"></i> Calculate
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="clearCalc('concrete')">
+                                <i class="fas fa-undo"></i> Clear
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="resetDefaults('concrete')">
+                                <i class="fas fa-rotate-left"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    <div class="result-box" id="concreteResult">
+                        <div class="result-item">
+                            <span class="label">Volume (m³)</span>
+                            <span class="value" id="concreteM3">—</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="label">Volume (ft³)</span>
+                            <span class="value" id="concreteFt3">—</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="label">Cement (bags)</span>
+                            <span class="value success" id="concreteCement">—</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="label">Sand (kg)</span>
+                            <span class="value" id="concreteSand">—</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="label">Aggregate (kg)</span>
+                            <span class="value" id="concreteAggregate">—</span>
+                        </div>
+                        <div class="result-item cost-item">
+                            <span class="label">Estimated Cost</span>
+                            <span class="value success" id="concreteCostTotal">—</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. STEEL WEIGHT CALCULATOR -->
+        <div class="calc-container" id="calc-steel">
+            <div class="calc-card">
+                <div class="card-header-custom">
+                    <div class="header-icon"><i class="fas fa-weight-scale"></i></div>
+                    <h5>Steel Weight Calculator <small>Mild steel rebar weight &amp; cost</small></h5>
+                </div>
+                <div class="card-body-custom">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Diameter (mm)</label>
+                            <select class="form-select" id="steelDiameter" data-bs-toggle="tooltip" title="Select rebar diameter.">
+                                <option value="6">6 mm</option>
+                                <option value="8">8 mm</option>
+                                <option value="10" selected>10 mm</option>
+                                <option value="12">12 mm</option>
+                                <option value="16">16 mm</option>
+                                <option value="20">20 mm</option>
+                                <option value="25">25 mm</option>
+                                <option value="32">32 mm</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Length (m)</label>
+                            <input type="number" class="form-control" id="steelLength" value="12" step="0.1" min="0.01" data-bs-toggle="tooltip" title="Enter the length of the rebar in meters." />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Price per kg (₹)</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="steelCost" value="65" step="1" min="0" data-bs-toggle="tooltip" title="Enter the cost per kilogram of steel." />
+                                <span class="input-group-text">₹</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-3 mt-1">
+                        <div class="col-md-4 d-flex align-items-end gap-2">
+                            <button class="btn btn-accent" onclick="calculateSteel()">
+                                <i class="fas fa-calculator"></i> Calculate
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="clearCalc('steel')">
+                                <i class="fas fa-undo"></i> Clear
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="resetDefaults('steel')">
+                                <i class="fas fa-rotate-left"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    <div class="result-box" id="steelResult">
+                        <div class="result-item">
+                            <span class="label">Weight per meter</span>
+                            <span class="value" id="steelPerMeter">—</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="label">Total Weight</span>
+                            <span class="value success" id="steelTotal">—</span>
+                        </div>
+                        <div class="result-item cost-item">
+                            <span class="label">Estimated Cost</span>
+                            <span class="value success" id="steelCostTotal">—</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. PAINT CALCULATOR -->
+        <div class="calc-container" id="calc-paint">
+            <div class="calc-card">
+                <div class="card-header-custom">
+                    <div class="header-icon"><i class="fas fa-paint-roller"></i></div>
+                    <h5>Paint Calculator <small>Estimate paint required &amp; cost</small></h5>
+                </div>
+                <div class="card-body-custom">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label">Wall Area (ft²)</label>
+                            <input type="number" class="form-control" id="paintArea" value="400" step="1" min="1" data-bs-toggle="tooltip" title="Total surface area to be painted." />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Number of Coats</label>
+                            <select class="form-select" id="paintCoats" data-bs-toggle="tooltip" title="Number of paint coats.">
+                                <option value="1">1 coat</option>
+                                <option value="2" selected>2 coats</option>
+                                <option value="3">3 coats</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Coverage (ft²/L)</label>
+                            <input type="number" class="form-control" id="paintCoverage" value="400" step="1" min="1" data-bs-toggle="tooltip" title="Area covered per liter of paint." />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Price per L (₹)</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="paintCost" value="250" step="10" min="0" data-bs-toggle="tooltip" title="Enter the cost per liter of paint." />
+                                <span class="input-group-text">₹</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-3 mt-1">
+                        <div class="col-md-4 d-flex align-items-end gap-2">
+                            <button class="btn btn-accent" onclick="calculatePaint()">
+                                <i class="fas fa-calculator"></i> Calculate
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="clearCalc('paint')">
+                                <i class="fas fa-undo"></i> Clear
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="resetDefaults('paint')">
+                                <i class="fas fa-rotate-left"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    <div class="result-box" id="paintResult">
+                        <div class="result-item">
+                            <span class="label">Total Paint Required</span>
+                            <span class="value success" id="paintTotal">—</span>
+                        </div>
+                        <div class="result-item cost-item">
+                            <span class="label">Estimated Cost</span>
+                            <span class="value success" id="paintCostTotal">—</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. TILE CALCULATOR -->
+        <div class="calc-container" id="calc-tile">
+            <div class="calc-card">
+                <div class="card-header-custom">
+                    <div class="header-icon"><i class="fas fa-th-large"></i></div>
+                    <h5>Tile Calculator <small>Floor &amp; wall tile estimation + cost</small></h5>
+                </div>
+                <div class="card-body-custom">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label">Floor Length (ft)</label>
+                            <input type="number" class="form-control" id="tileLength" value="15" step="0.1" min="0.01" data-bs-toggle="tooltip" title="Length of the floor area." />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Floor Width (ft)</label>
+                            <input type="number" class="form-control" id="tileWidth" value="12" step="0.1" min="0.01" data-bs-toggle="tooltip" title="Width of the floor area." />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Tile Size</label>
+                            <select class="form-select" id="tileSize" data-bs-toggle="tooltip" title="Select tile dimension.">
+                                <option value="12">12″ × 12″</option>
+                                <option value="18">18″ × 18″</option>
+                                <option value="24" selected>24″ × 24″</option>
+                                <option value="30">30″ × 30″</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Wastage (%)</label>
+                            <input type="number" class="form-control" id="tileWastage" value="10" step="1" min="0" max="30" data-bs-toggle="tooltip" title="Extra tiles for cutting and breakage." />
+                        </div>
+                    </div>
+                    <div class="row g-3 mt-1">
+                        <div class="col-md-3">
+                            <label class="form-label">Price per Tile (₹)</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="tileCost" value="120" step="5" min="0" data-bs-toggle="tooltip" title="Enter the cost per tile." />
+                                <span class="input-group-text">₹</span>
+                            </div>
+                        </div>
+                        <div class="col-md-9 d-flex align-items-end gap-2">
+                            <button class="btn btn-accent" onclick="calculateTile()">
+                                <i class="fas fa-calculator"></i> Calculate
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="clearCalc('tile')">
+                                <i class="fas fa-undo"></i> Clear
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="resetDefaults('tile')">
+                                <i class="fas fa-rotate-left"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    <div class="result-box" id="tileResult">
+                        <div class="result-item">
+                            <span class="label">Floor Area (ft²)</span>
+                            <span class="value" id="tileArea">—</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="label">Tiles Required (no wastage)</span>
+                            <span class="value" id="tileCount">—</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="label">Tiles Required (with wastage)</span>
+                            <span class="value success" id="tileCountWaste">—</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="label">Extra Tiles (wastage)</span>
+                            <span class="value warning" id="tileExtra">—</span>
+                        </div>
+                        <div class="result-item cost-item">
+                            <span class="label">Estimated Cost</span>
+                            <span class="value success" id="tileCostTotal">—</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. CEMENT BAG CALCULATOR -->
+        <div class="calc-container" id="calc-cement">
+            <div class="calc-card">
+                <div class="card-header-custom">
+                    <div class="header-icon"><i class="fas fa-sack"></i></div>
+                    <h5>Cement Bag Calculator <small>Estimate cement bags for concrete + cost</small></h5>
+                </div>
+                <div class="card-body-custom">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Area (ft²)</label>
+                            <input type="number" class="form-control" id="cementArea" value="100" step="1" min="0.1" data-bs-toggle="tooltip" title="Surface area to be covered." />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Thickness (ft)</label>
+                            <input type="number" class="form-control" id="cementThickness" value="0.5" step="0.1" min="0.01" data-bs-toggle="tooltip" title="Thickness of the concrete layer." />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Price per Bag (₹)</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="cementBagCost" value="350" step="10" min="0" data-bs-toggle="tooltip" title="Cost per 50 kg bag of cement." />
+                                <span class="input-group-text">₹</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-3 mt-1">
+                        <div class="col-md-4 d-flex align-items-end gap-2">
+                            <button class="btn btn-accent" onclick="calculateCement()">
+                                <i class="fas fa-calculator"></i> Calculate
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="clearCalc('cement')">
+                                <i class="fas fa-undo"></i> Clear
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="resetDefaults('cement')">
+                                <i class="fas fa-rotate-left"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    <div class="result-box" id="cementResult">
+                        <div class="result-item">
+                            <span class="label">Volume (ft³)</span>
+                            <span class="value" id="cementVolume">—</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="label">Cement Bags (50 kg)</span>
+                            <span class="value success" id="cementBags">—</span>
+                        </div>
+                        <div class="result-item cost-item">
+                            <span class="label">Estimated Cost</span>
+                            <span class="value success" id="cementCostTotal">—</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. PLASTER CALCULATOR -->
+        <div class="calc-container" id="calc-plaster">
+            <div class="calc-card">
+                <div class="card-header-custom">
+                    <div class="header-icon"><i class="fas fa-eraser"></i></div>
+                    <h5>Plaster Calculator <small>Cement &amp; sand for plastering + cost</small></h5>
+                </div>
+                <div class="card-body-custom">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Wall Area (ft²)</label>
+                            <input type="number" class="form-control" id="plasterArea" value="200" step="1" min="1" data-bs-toggle="tooltip" title="Area of wall to be plastered." />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Plaster Thickness (in)</label>
+                            <input type="number" class="form-control" id="plasterThick" value="0.5" step="0.1" min="0.01" data-bs-toggle="tooltip" title="Thickness of plaster in inches." />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Mix Ratio</label>
+                            <select class="form-select" id="plasterMix" data-bs-toggle="tooltip" title="Cement:sand ratio for plaster.">
+                                <option value="1:4">1:4 (Standard)</option>
+                                <option value="1:6">1:6 (Rough)</option>
+                                <option value="1:3">1:3 (Rich)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row g-3 mt-1">
+                        <div class="col-md-3">
+                            <label class="form-label">Cement Price/Bag (₹)</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="plasterCementCost" value="350" step="10" min="0" data-bs-toggle="tooltip" title="Cost per 50 kg cement bag." />
+                                <span class="input-group-text">₹</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Sand Price/kg (₹)</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="plasterSandCost" value="2" step="0.5" min="0" data-bs-toggle="tooltip" title="Cost per kg of sand." />
+                                <span class="input-group-text">₹</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 d-flex align-items-end gap-2">
+                            <button class="btn btn-accent" onclick="calculatePlaster()">
+                                <i class="fas fa-calculator"></i> Calculate
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="clearCalc('plaster')">
+                                <i class="fas fa-undo"></i> Clear
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="resetDefaults('plaster')">
+                                <i class="fas fa-rotate-left"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    <div class="result-box" id="plasterResult">
+                        <div class="result-item">
+                            <span class="label">Volume (ft³)</span>
+                            <span class="value" id="plasterVolume">—</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="label">Cement (bags)</span>
+                            <span class="value success" id="plasterCement">—</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="label">Sand (kg)</span>
+                            <span class="value" id="plasterSand">—</span>
+                        </div>
+                        <div class="result-item cost-item">
+                            <span class="label">Estimated Cost</span>
+                            <span class="value success" id="plasterCostTotal">—</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 8. EXCAVATION CALCULATOR -->
+        <div class="calc-container" id="calc-excavation">
+            <div class="calc-card">
+                <div class="card-header-custom">
+                    <div class="header-icon"><i class="fas fa-tractor"></i></div>
+                    <h5>Excavation Calculator <small>Volume of earth to excavate + cost</small></h5>
+                </div>
+                <div class="card-body-custom">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label">Length (ft)</label>
+                            <input type="number" class="form-control" id="excavLength" value="20" step="0.1" min="0.01" data-bs-toggle="tooltip" title="Length of excavation area." />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Width (ft)</label>
+                            <input type="number" class="form-control" id="excavWidth" value="15" step="0.1" min="0.01" data-bs-toggle="tooltip" title="Width of excavation area." />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Depth (ft)</label>
+                            <input type="number" class="form-control" id="excavDepth" value="5" step="0.1" min="0.01" data-bs-toggle="tooltip" title="Depth of excavation." />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Cost per m³ (₹)</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="excavCost" value="1200" step="100" min="0" data-bs-toggle="tooltip" title="Excavation cost per cubic meter." />
+                                <span class="input-group-text">₹</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-3 mt-1">
+                        <div class="col-md-4 d-flex align-items-end gap-2">
+                            <button class="btn btn-accent" onclick="calculateExcavation()">
+                                <i class="fas fa-calculator"></i> Calculate
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="clearCalc('excavation')">
+                                <i class="fas fa-undo"></i> Clear
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="resetDefaults('excavation')">
+                                <i class="fas fa-rotate-left"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    <div class="result-box" id="excavResult">
+                        <div class="result-item">
+                            <span class="label">Volume (ft³)</span>
+                            <span class="value" id="excavFt3">—</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="label">Volume (m³)</span>
+                            <span class="value success" id="excavM3">—</span>
+                        </div>
+                        <div class="result-item cost-item">
+                            <span class="label">Estimated Cost</span>
+                            <span class="value success" id="excavCostTotal">—</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 9. BLOCK CALCULATOR -->
+        <div class="calc-container" id="calc-block">
+            <div class="calc-card">
+                <div class="card-header-custom">
+                    <div class="header-icon"><i class="fas fa-border-all"></i></div>
+                    <h5>Block Calculator <small>Concrete block estimation + cost</small></h5>
+                </div>
+                <div class="card-body-custom">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label">Wall Length (ft)</label>
+                            <input type="number" class="form-control" id="blockLength" value="30" step="0.1" min="0.01" data-bs-toggle="tooltip" title="Length of the wall." />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Wall Height (ft)</label>
+                            <input type="number" class="form-control" id="blockHeight" value="10" step="0.1" min="0.01" data-bs-toggle="tooltip" title="Height of the wall." />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Block Size</label>
+                            <select class="form-select" id="blockSize" data-bs-toggle="tooltip" title="Select concrete block size.">
+                                <option value="16">16″ × 8″ × 8″ (Standard)</option>
+                                <option value="12">12″ × 8″ × 8″</option>
+                                <option value="8">8″ × 8″ × 8″</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Price per Block (₹)</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="blockCost" value="45" step="5" min="0" data-bs-toggle="tooltip" title="Cost per concrete block." />
+                                <span class="input-group-text">₹</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-3 mt-1">
+                        <div class="col-md-4 d-flex align-items-end gap-2">
+                            <button class="btn btn-accent" onclick="calculateBlock()">
+                                <i class="fas fa-calculator"></i> Calculate
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="clearCalc('block')">
+                                <i class="fas fa-undo"></i> Clear
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="resetDefaults('block')">
+                                <i class="fas fa-rotate-left"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    <div class="result-box" id="blockResult">
+                        <div class="result-item">
+                            <span class="label">Wall Area (ft²)</span>
+                            <span class="value" id="blockArea">—</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="label">Blocks per Sq. Ft.</span>
+                            <span class="value" id="blockPerSqft">—</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="label">Total Blocks Required</span>
+                            <span class="value success" id="blockTotal">—</span>
+                        </div>
+                        <div class="result-item cost-item">
+                            <span class="label">Estimated Cost</span>
+                            <span class="value success" id="blockCostTotal">—</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 10. UNIT CONVERTER -->
+        <div class="calc-container" id="calc-converter">
+            <div class="calc-card">
+                <div class="card-header-custom">
+                    <div class="header-icon"><i class="fas fa-arrow-right-arrow-left"></i></div>
+                    <h5>Unit Converter <small>Construction units conversion</small></h5>
+                </div>
+                <div class="card-body-custom">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Conversion Type</label>
+                            <select class="form-select" id="converterType" data-bs-toggle="tooltip" title="Select the conversion direction.">
+                                <option value="ft-m">Feet → Meter</option>
+                                <option value="m-ft">Meter → Feet</option>
+                                <option value="in-cm">Inch → CM</option>
+                                <option value="sqft-sqm">Sq. Feet → Sq. Meter</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Value</label>
+                            <input type="number" class="form-control" id="converterValue" value="10" step="any" min="0" data-bs-toggle="tooltip" title="Enter the value to convert." />
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end gap-2">
+                            <button class="btn btn-accent" onclick="calculateConverter()">
+                                <i class="fas fa-calculator"></i> Convert
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="clearCalc('converter')">
+                                <i class="fas fa-undo"></i> Clear
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="resetDefaults('converter')">
+                                <i class="fas fa-rotate-left"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    <div class="result-box" id="converterResult">
+                        <div class="result-item">
+                            <span class="label">Result</span>
+                            <span class="value success" id="converterResultVal">—</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── HISTORY MODAL ─── -->
+        <div class="modal fade" id="historyModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                <div class="modal-content" style="background:var(--bg-card);color:var(--text-primary);border:1px solid var(--border-color);">
+                    <div class="modal-header" style="border-bottom-color:var(--border-color);">
+                        <h5 class="modal-title"><i class="fas fa-clock-rotate-left me-2"></i>Calculation History</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter:var(--btn-close-filter);"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="historyList" class="history-list">
+                            <p class="text-muted text-center py-3">No calculations saved yet.</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="border-top-color:var(--border-color);">
+                        <button class="btn btn-outline-danger" onclick="clearHistory()"><i class="fas fa-trash"></i> Clear All</button>
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ───── TOAST CONTAINER ───── -->
+    <div class="toast-container-custom" id="toastContainer"></div>
+
+    <!-- ───── BOOTSTRAP JS ───── -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+    <script>
+        /* ========================================================================
+           CONSTRUCTION MATERIAL CALCULATOR SUITE PRO – Professional Edition
+           ======================================================================== */
+
+        // ─── DOM REFS ───
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const hamburger = document.getElementById('hamburgerBtn');
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const themeLabel = document.getElementById('themeLabel');
+        const pageTitle = document.getElementById('pageTitle');
+        const navItems = document.querySelectorAll('.nav-item');
+        const calcContainers = document.querySelectorAll('.calc-container');
+        const historyBtn = document.getElementById('historyBtn');
+        const exportPdfBtn = document.getElementById('exportPdfBtn');
+        const printBtn = document.getElementById('printBtn');
+        const toastContainer = document.getElementById('toastContainer');
+        const dashboardGrid = document.getElementById('dashboardGrid');
+
+        // ─── THEME ───
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-bs-theme', theme);
+            localStorage.setItem('theme', theme);
+            if (theme === 'dark') {
+                themeIcon.className = 'fas fa-sun';
+                themeLabel.textContent = 'Light';
+            } else {
+                themeIcon.className = 'fas fa-moon';
+                themeLabel.textContent = 'Dark';
+            }
+            // Update modal close filter
+            document.querySelectorAll('.btn-close').forEach(btn => {
+                btn.style.filter = theme === 'dark' ? 'invert(1) brightness(0.8)' : 'none';
+            });
+        }
+
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        setTheme(savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-bs-theme');
+            setTheme(current === 'light' ? 'dark' : 'light');
+            showToast(`Switched to ${current === 'light' ? 'dark' : 'light'} mode`, 'fa-moon');
+        });
+
+        // ─── SIDEBAR TOGGLE ───
+        function toggleSidebar(open) {
+            if (open === undefined) {
+                sidebar.classList.toggle('open');
+                overlay.classList.toggle('show');
+            } else if (open) {
+                sidebar.classList.add('open');
+                overlay.classList.add('show');
+            } else {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('show');
+            }
+        }
+
+        hamburger.addEventListener('click', () => toggleSidebar());
+        overlay.addEventListener('click', () => toggleSidebar(false));
+
+        // Close sidebar on nav click (mobile)
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                if (window.innerWidth <= 991) toggleSidebar(false);
+            });
+        });
+
+        // ─── NAVIGATION ───
+        navItems.forEach(item => {
+            item.addEventListener('click', function() {
+                navItems.forEach(n => n.classList.remove('active'));
+                this.classList.add('active');
+
+                const calc = this.dataset.calc;
+                calcContainers.forEach(c => c.classList.remove('active'));
+                const target = document.getElementById(`calc-${calc}`);
+                if (target) target.classList.add('active');
+
+                // Update page title
+                const label = this.textContent.trim().replace(/[★☆]/g, '').trim();
+                pageTitle.innerHTML = `${label} <small>${getCalcSubtitle(calc)}</small>`;
+
+                // Close sidebar on mobile
+                if (window.innerWidth <= 991) toggleSidebar(false);
+            });
+        });
+
+        function getCalcSubtitle(calc) {
+            const map = {
+                home: 'Overview &amp; quick access',
+                brick: 'Estimate bricks, wastage &amp; cost',
+                concrete: 'Volume, materials &amp; cost',
+                steel: 'Rebar weight &amp; cost',
+                paint: 'Paint required &amp; cost',
+                tile: 'Floor &amp; wall tiles + cost',
+                cement: 'Cement bags &amp; cost',
+                plaster: 'Cement, sand &amp; cost',
+                excavation: 'Earthwork volume &amp; cost',
+                block: 'Concrete blocks &amp; cost',
+                converter: 'Construction units conversion'
+            };
+            return map[calc] || '';
+        }
+
+        // ─── DASHBOARD HOME ───
+        const calculatorMeta = [{
+            id: 'brick',
+            icon: 'fa-cubes',
+            title: 'Brick Calculator',
+            desc: 'Estimate bricks, wastage & cost',
+            color: '#2563eb'
+        }, {
+            id: 'concrete',
+            icon: 'fa-database',
+            title: 'Concrete Calculator',
+            desc: 'Volume, materials & cost',
+            color: '#16a34a'
+        }, {
+            id: 'steel',
+            icon: 'fa-weight-scale',
+            title: 'Steel Weight',
+            desc: 'Rebar weight & cost',
+            color: '#f59e0b'
+        }, {
+            id: 'paint',
+            icon: 'fa-paint-roller',
+            title: 'Paint Calculator',
+            desc: 'Paint required & cost',
+            color: '#ec4899'
+        }, {
+            id: 'tile',
+            icon: 'fa-th-large',
+            title: 'Tile Calculator',
+            desc: 'Floor & wall tiles + cost',
+            color: '#8b5cf6'
+        }, {
+            id: 'cement',
+            icon: 'fa-sack',
+            title: 'Cement Bag',
+            desc: 'Cement bags & cost',
+            color: '#f97316'
+        }, {
+            id: 'plaster',
+            icon: 'fa-eraser',
+            title: 'Plaster Calculator',
+            desc: 'Cement, sand & cost',
+            color: '#06b6d4'
+        }, {
+            id: 'excavation',
+            icon: 'fa-tractor',
+            title: 'Excavation',
+            desc: 'Earthwork volume & cost',
+            color: '#84cc16'
+        }, {
+            id: 'block',
+            icon: 'fa-border-all',
+            title: 'Block Calculator',
+            desc: 'Concrete blocks & cost',
+            color: '#a855f7'
+        }, {
+            id: 'converter',
+            icon: 'fa-arrow-right-arrow-left',
+            title: 'Unit Converter',
+            desc: 'Construction units conversion',
+            color: '#64748b'
+        }];
+
+        function renderDashboard() {
+            const favorites = getFavorites();
+            let html = '';
+            calculatorMeta.forEach(meta => {
+                const isFav = favorites.includes(meta.id);
+                html += `
+                        <div class="col-xl-3 col-lg-4 col-md-6" onclick="navigateTo('${meta.id}')">
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background:${meta.color}20;color:${meta.color};">
+                                    <i class="fas ${meta.icon}"></i>
+                                </div>
+                                <div class="stat-title">${meta.title}</div>
+                                <div class="stat-desc">${meta.desc}</div>
+                                ${isFav ? '<div class="stat-badge"><i class="fas fa-star text-warning"></i> Favorite</div>' : ''}
+                            </div>
+                        </div>
+                    `;
+            });
+            dashboardGrid.innerHTML = html;
+        }
+
+        function navigateTo(calcId) {
+            const targetNav = document.querySelector(`.nav-item[data-calc="${calcId}"]`);
+            if (targetNav) targetNav.click();
+        }
+
+        // ─── FAVORITES ───
+        function getFavorites() {
+            try {
+                return JSON.parse(localStorage.getItem('favCalculators')) || [];
+            } catch { return []; }
+        }
+
+        function saveFavorites(favs) {
+            localStorage.setItem('favCalculators', JSON.stringify(favs));
+        }
+
+        function toggleFavorite(calcId) {
+            let favs = getFavorites();
+            if (favs.includes(calcId)) {
+                favs = favs.filter(id => id !== calcId);
+                showToast('Removed from favorites', 'fa-star');
+            } else {
+                favs.push(calcId);
+                showToast('Added to favorites', 'fa-star text-warning');
+            }
+            saveFavorites(favs);
+            updateFavoriteStars();
+            renderDashboard();
+        }
+
+        function updateFavoriteStars() {
+            const favs = getFavorites();
+            document.querySelectorAll('.favorite-star').forEach(el => {
+                const calc = el.dataset.calc;
+                if (favs.includes(calc)) {
+                    el.classList.add('active');
+                    el.querySelector('i').className = 'fas fa-star';
+                } else {
+                    el.classList.remove('active');
+                    el.querySelector('i').className = 'fas fa-star';
+                }
+            });
+        }
+
+        document.querySelectorAll('.favorite-star').forEach(el => {
+            el.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleFavorite(el.dataset.calc);
+            });
+        });
+
+        // ─── TOAST SYSTEM ───
+        function showToast(message, icon = 'fa-check-circle', type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast-custom toast-${type}`;
+            toast.innerHTML = `<i class="fas ${icon}"></i> ${message}`;
+            toastContainer.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(16px)';
+                toast.style.transition = 'opacity 0.4s, transform 0.4s';
+                setTimeout(() => toast.remove(), 400);
+            }, 2800);
+        }
+
+        // ─── HISTORY (LocalStorage) ───
+        let historyData = [];
+
+        function loadHistory() {
+            try {
+                const raw = localStorage.getItem('calcHistory');
+                historyData = raw ? JSON.parse(raw) : [];
+            } catch { historyData = []; }
+        }
+
+        function saveHistory() {
+            localStorage.setItem('calcHistory', JSON.stringify(historyData));
+        }
+
+        function addHistory(calcName, detail, result) {
+            loadHistory();
+            const entry = {
+                id: Date.now(),
+                calc: calcName,
+                detail: detail,
+                result: result,
+                time: new Date().toLocaleString()
+            };
+            historyData.unshift(entry);
+            if (historyData.length > 50) historyData = historyData.slice(0, 50);
+            saveHistory();
+        }
+
+        function renderHistory() {
+            loadHistory();
+            const list = document.getElementById('historyList');
+            if (!historyData.length) {
+                list.innerHTML = '<p class="text-muted text-center py-3">No calculations saved yet.</p>';
+                return;
+            }
+            let html = '';
+            historyData.forEach(item => {
+                html += `
+                        <div class="history-item">
+                            <div>
+                                <strong>${item.calc}</strong>
+                                <div class="h-detail">${item.detail}</div>
+                                <div class="h-time">${item.time}</div>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="text-accent fw-600">${item.result}</span>
+                                <span class="h-delete" onclick="deleteHistory(${item.id})"><i class="fas fa-times"></i></span>
+                            </div>
+                        </div>
+                    `;
+            });
+            list.innerHTML = html;
+        }
+
+        function deleteHistory(id) {
+            loadHistory();
+            historyData = historyData.filter(h => h.id !== id);
+            saveHistory();
+            renderHistory();
+            showToast('History entry removed', 'fa-trash');
+        }
+
+        function clearHistory() {
+            if (!confirm('Clear all calculation history?')) return;
+            historyData = [];
+            saveHistory();
+            renderHistory();
+            showToast('History cleared', 'fa-trash');
+        }
+
+        historyBtn.addEventListener('click', () => {
+            renderHistory();
+            const modal = new bootstrap.Modal(document.getElementById('historyModal'));
+            modal.show();
+        });
+
+        // ─── PRINT ───
+        printBtn.addEventListener('click', () => {
+            window.print();
+        });
+
+        // ─── EXPORT PDF ───
+        exportPdfBtn.addEventListener('click', async () => {
+            try {
+                showToast('Generating PDF...', 'fa-spinner fa-spin');
+                const element = document.getElementById('mainContent');
+                const canvas = await html2canvas(element, {
+                    scale: 2,
+                    backgroundColor: document.documentElement.getAttribute('data-bs-theme') === 'dark' ? '#0d1117' :
+                        '#f4f6f9',
+                    logging: false,
+                    useCORS: true,
+                });
+                const imgData = canvas.toDataURL('image/png');
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+                let heightLeft = pdfHeight;
+                let position = 0;
+
+                pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+                heightLeft -= pdf.internal.pageSize.getHeight();
+
+                while (heightLeft > 0) {
+                    position = heightLeft - pdfHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+                    heightLeft -= pdf.internal.pageSize.getHeight();
+                }
+
+                pdf.save('construction-calculations.pdf');
+                showToast('PDF exported successfully!', 'fa-file-pdf');
+            } catch (err) {
+                console.error(err);
+                showToast('PDF export failed. Please try again.', 'fa-exclamation-triangle', 'error');
+            }
+        });
+
+        // ─── CLEAR CALCULATOR ───
+        function clearCalc(prefix) {
+            const inputs = document.querySelectorAll(`#calc-${prefix} .form-control, #calc-${prefix} .form-select`);
+            inputs.forEach(inp => {
+                if (inp.tagName === 'SELECT') {
+                    inp.selectedIndex = 0;
+                } else {
+                    inp.value = '';
+                }
+                inp.classList.remove('is-invalid');
+            });
+            const resultBox = document.getElementById(`${prefix}Result`);
+            if (resultBox) {
+                const valueSpans = resultBox.querySelectorAll('.value');
+                valueSpans.forEach(el => el.textContent = '—');
+            }
+            showToast('Cleared inputs', 'fa-undo');
+        }
+
+        // ─── RESET DEFAULTS ───
+        function resetDefaults(prefix) {
+            const defaultValues = {
+                brick: { length: 20, height: 10, mortar: 0.5, wastage: '5', cost: 8 },
+                concrete: { length: 10, width: 10, depth: 0.5, mix: '1:1.5:3', cost: 4500 },
+                steel: { diameter: '10', length: 12, cost: 65 },
+                paint: { area: 400, coats: '2', coverage: 400, cost: 250 },
+                tile: { length: 15, width: 12, size: '24', wastage: 10, cost: 120 },
+                cement: { area: 100, thickness: 0.5, cost: 350 },
+                plaster: { area: 200, thick: 0.5, mix: '1:4', cementCost: 350, sandCost: 2 },
+                excavation: { length: 20, width: 15, depth: 5, cost: 1200 },
+                block: { length: 30, height: 10, size: '16', cost: 45 },
+                converter: { type: 'ft-m', value: 10 }
+            };
+
+            const vals = defaultValues[prefix];
+            if (!vals) return;
+            const inputs = document.querySelectorAll(`#calc-${prefix} .form-control, #calc-${prefix} .form-select`);
+            inputs.forEach(inp => {
+                const id = inp.id;
+                const key = id.replace(prefix, '').toLowerCase();
+                // map keys
+                let valKey = key;
+                if (key === 'length' && prefix === 'brick') valKey = 'length';
+                if (key === 'height' && prefix === 'brick') valKey = 'height';
+                if (key === 'mortar') valKey = 'mortar';
+                if (key === 'wastage') valKey = 'wastage';
+                if (key === 'cost' && prefix === 'brick') valKey = 'cost';
+                if (key === 'length' && prefix === 'concrete') valKey = 'length';
+                if (key === 'width' && prefix === 'concrete') valKey = 'width';
+                if (key === 'depth' && prefix === 'concrete') valKey = 'depth';
+                if (key === 'mix') valKey = 'mix';
+                if (key === 'cost' && prefix === 'concrete') valKey = 'cost';
+                if (key === 'diameter') valKey = 'diameter';
+                if (key === 'length' && prefix === 'steel') valKey = 'length';
+                if (key === 'cost' && prefix === 'steel') valKey = 'cost';
+                if (key === 'area' && prefix === 'paint') valKey = 'area';
+                if (key === 'coats') valKey = 'coats';
+                if (key === 'coverage') valKey = 'coverage';
+                if (key === 'cost' && prefix === 'paint') valKey = 'cost';
+                if (key === 'length' && prefix === 'tile') valKey = 'length';
+                if (key === 'width' && prefix === 'tile') valKey = 'width';
+                if (key === 'size' && prefix === 'tile') valKey = 'size';
+                if (key === 'wastage' && prefix === 'tile') valKey = 'wastage';
+                if (key === 'cost' && prefix === 'tile') valKey = 'cost';
+                if (key === 'area' && prefix === 'cement') valKey = 'area';
+                if (key === 'thickness' && prefix === 'cement') valKey = 'thickness';
+                if (key === 'cost' && prefix === 'cement') valKey = 'cost';
+                if (key === 'area' && prefix === 'plaster') valKey = 'area';
+                if (key === 'thick' && prefix === 'plaster') valKey = 'thick';
+                if (key === 'mix' && prefix === 'plaster') valKey = 'mix';
+                if (key === 'cementcost') valKey = 'cementCost';
+                if (key === 'sandcost') valKey = 'sandCost';
+                if (key === 'length' && prefix === 'excavation') valKey = 'length';
+                if (key === 'width' && prefix === 'excavation') valKey = 'width';
+                if (key === 'depth' && prefix === 'excavation') valKey = 'depth';
+                if (key === 'cost' && prefix === 'excavation') valKey = 'cost';
+                if (key === 'length' && prefix === 'block') valKey = 'length';
+                if (key === 'height' && prefix === 'block') valKey = 'height';
+                if (key === 'size' && prefix === 'block') valKey = 'size';
+                if (key === 'cost' && prefix === 'block') valKey = 'cost';
+                if (key === 'type' && prefix === 'converter') valKey = 'type';
+                if (key === 'value' && prefix === 'converter') valKey = 'value';
+
+                if (vals[valKey] !== undefined) {
+                    if (inp.tagName === 'SELECT') {
+                        inp.value = vals[valKey];
+                    } else {
+                        inp.value = vals[valKey];
+                    }
+                }
+            });
+            // Recalculate
+            const map = {
+                brick: calculateBrick,
+                concrete: calculateConcrete,
+                steel: calculateSteel,
+                paint: calculatePaint,
+                tile: calculateTile,
+                cement: calculateCement,
+                plaster: calculatePlaster,
+                excavation: calculateExcavation,
+                block: calculateBlock,
+                converter: calculateConverter
+            };
+            if (map[prefix]) map[prefix]();
+            showToast('Reset to defaults', 'fa-rotate-left');
+        }
+
+        // ─── 1. BRICK CALCULATOR ───
+        function calculateBrick() {
+            const L = parseFloat(document.getElementById('brickLength').value) || 0;
+            const H = parseFloat(document.getElementById('brickHeight').value) || 0;
+            const brickSize = parseFloat(document.getElementById('brickSize').value) || 8;
+            const mortar = parseFloat(document.getElementById('brickMortar').value) || 0.5;
+            const wastage = parseFloat(document.getElementById('brickWastage').value) || 0;
+            const costPerBrick = parseFloat(document.getElementById('brickCost').value) || 0;
+
+            if (L <= 0 || H <= 0) {
+                showToast('Please enter valid wall dimensions', 'fa-exclamation-triangle', 'error');
+                return;
+            }
+
+            const brickLenFt = brickSize / 12;
+            const brickHtFt = 4 / 12;
+            const mortarFt = mortar / 12;
+
+            const effectiveLen = brickLenFt + mortarFt;
+            const effectiveHt = brickHtFt + mortarFt;
+            const brickArea = effectiveLen * effectiveHt;
+
+            const wallArea = L * H;
+            const bricksPerSqft = 1 / brickArea;
+            const totalBricks = wallArea * bricksPerSqft;
+            const wasteAdded = totalBricks * (wastage / 100);
+            const totalWithWaste = totalBricks + wasteAdded;
+            const totalCost = totalWithWaste * costPerBrick;
+
+            document.getElementById('brickWallArea').textContent = wallArea.toFixed(2) + ' ft²';
+            document.getElementById('brickPerSqft').textContent = bricksPerSqft.toFixed(2);
+            document.getElementById('brickTotal').textContent = Math.ceil(totalBricks);
+            document.getElementById('brickTotalWaste').textContent = Math.ceil(totalWithWaste);
+            document.getElementById('brickWasteAdded').textContent = Math.ceil(wasteAdded) + ` (${wastage}%)`;
+            document.getElementById('brickCostTotal').textContent = '₹' + Math.ceil(totalCost).toLocaleString();
+
+            addHistory('Brick Calculator', `Wall: ${L}×${H} ft, ${brickSize}" brick, ${wastage}% waste`,
+                `${Math.ceil(totalWithWaste)} bricks, ₹${Math.ceil(totalCost).toLocaleString()}`);
+            showToast('Brick calculation complete', 'fa-cubes');
+        }
+
+        // ─── 2. CONCRETE CALCULATOR ───
+        function calculateConcrete() {
+            const L = parseFloat(document.getElementById('concreteLength').value) || 0;
+            const W = parseFloat(document.getElementById('concreteWidth').value) || 0;
+            const D = parseFloat(document.getElementById('concreteDepth').value) || 0;
+            const mix = document.getElementById('concreteMix').value;
+            const costPerM3 = parseFloat(document.getElementById('concreteCost').value) || 0;
+
+            if (L <= 0 || W <= 0 || D <= 0) {
+                showToast('Please enter valid dimensions', 'fa-exclamation-triangle', 'error');
+                return;
+            }
+
+            const volFt3 = L * W * D;
+            const volM3 = volFt3 * 0.0283168;
+
+            // Mix ratios: cement:sand:aggregate
+            let cementFactor, sandFactor, aggFactor;
+            if (mix === '1:1.5:3') { cementFactor = 1;
+                sandFactor = 1.5;
+                aggFactor = 3; } else if (mix === '1:2:4') { cementFactor = 1;
+                sandFactor = 2;
+                aggFactor = 4; } else { cementFactor = 1;
+                sandFactor = 3;
+                aggFactor = 6; }
+
+            const totalParts = cementFactor + sandFactor + aggFactor;
+            const dryVolFactor = 1.54;
+            const cementBags = (volM3 * dryVolFactor * cementFactor / totalParts) / 0.0347; // 0.0347 m³ per bag
+            const sandKg = (volM3 * dryVolFactor * sandFactor / totalParts) * 1600;
+            const aggKg = (volM3 * dryVolFactor * aggFactor / totalParts) * 1500;
+            const totalCost = volM3 * costPerM3;
+
+            document.getElementById('concreteM3').textContent = volM3.toFixed(3) + ' m³';
+            document.getElementById('concreteFt3').textContent = volFt3.toFixed(2) + ' ft³';
+            document.getElementById('concreteCement').textContent = Math.ceil(cementBags) + ' bags';
+            document.getElementById('concreteSand').textContent = Math.ceil(sandKg) + ' kg';
+            document.getElementById('concreteAggregate').textContent = Math.ceil(aggKg) + ' kg';
+            document.getElementById('concreteCostTotal').textContent = '₹' + Math.ceil(totalCost).toLocaleString();
+
+            addHistory('Concrete Calculator', `${L}×${W}×${D} ft, ${mix}`,
+                `${volM3.toFixed(2)} m³, ₹${Math.ceil(totalCost).toLocaleString()}`);
+            showToast('Concrete calculation complete', 'fa-database');
+        }
+
+        // ─── 3. STEEL WEIGHT CALCULATOR ───
+        function calculateSteel() {
+            const dia = parseFloat(document.getElementById('steelDiameter').value) || 10;
+            const len = parseFloat(document.getElementById('steelLength').value) || 0;
+            const costPerKg = parseFloat(document.getElementById('steelCost').value) || 0;
+
+            if (len <= 0) {
+                showToast('Please enter valid length', 'fa-exclamation-triangle', 'error');
+                return;
+            }
+
+            const weightPerMeter = (dia * dia) / 162;
+            const totalWeight = weightPerMeter * len;
+            const totalCost = totalWeight * costPerKg;
+
+            document.getElementById('steelPerMeter').textContent = weightPerMeter.toFixed(3) + ' kg/m';
+            document.getElementById('steelTotal').textContent = totalWeight.toFixed(2) + ' kg';
+            document.getElementById('steelCostTotal').textContent = '₹' + Math.ceil(totalCost).toLocaleString();
+
+            addHistory('Steel Weight', `${dia}mm × ${len}m`, `${totalWeight.toFixed(2)} kg, ₹${Math.ceil(totalCost).toLocaleString()}`);
+            showToast('Steel weight calculated', 'fa-weight-scale');
+        }
+
+        // ─── 4. PAINT CALCULATOR ───
+        function calculatePaint() {
+            const area = parseFloat(document.getElementById('paintArea').value) || 0;
+            const coats = parseInt(document.getElementById('paintCoats').value) || 2;
+            const coverage = parseFloat(document.getElementById('paintCoverage').value) || 400;
+            const costPerL = parseFloat(document.getElementById('paintCost').value) || 0;
+
+            if (area <= 0 || coverage <= 0) {
+                showToast('Please enter valid values', 'fa-exclamation-triangle', 'error');
+                return;
+            }
+
+            const totalPaint = (area * coats) / coverage;
+            const totalCost = totalPaint * costPerL;
+
+            document.getElementById('paintTotal').textContent = totalPaint.toFixed(2) + ' Liters';
+            document.getElementById('paintCostTotal').textContent = '₹' + Math.ceil(totalCost).toLocaleString();
+
+            addHistory('Paint Calculator', `${area} ft², ${coats} coats`, `${totalPaint.toFixed(2)} L, ₹${Math.ceil(totalCost).toLocaleString()}`);
+            showToast('Paint calculation complete', 'fa-paint-roller');
+        }
+
+        // ─── 5. TILE CALCULATOR ───
+        function calculateTile() {
+            const L = parseFloat(document.getElementById('tileLength').value) || 0;
+            const W = parseFloat(document.getElementById('tileWidth').value) || 0;
+            const tileSize = parseFloat(document.getElementById('tileSize').value) || 24;
+            const wastage = parseFloat(document.getElementById('tileWastage').value) || 10;
+            const costPerTile = parseFloat(document.getElementById('tileCost').value) || 0;
+
+            if (L <= 0 || W <= 0) {
+                showToast('Please enter valid floor dimensions', 'fa-exclamation-triangle', 'error');
+                return;
+            }
+
+            const area = L * W;
+            const tileArea = (tileSize / 12) * (tileSize / 12);
+            const tiles = area / tileArea;
+            const extra = tiles * (wastage / 100);
+            const totalWithWaste = tiles + extra;
+            const totalCost = totalWithWaste * costPerTile;
+
+            document.getElementById('tileArea').textContent = area.toFixed(2) + ' ft²';
+            document.getElementById('tileCount').textContent = Math.ceil(tiles);
+            document.getElementById('tileCountWaste').textContent = Math.ceil(totalWithWaste);
+            document.getElementById('tileExtra').textContent = Math.ceil(extra) + ` (${wastage}%)`;
+            document.getElementById('tileCostTotal').textContent = '₹' + Math.ceil(totalCost).toLocaleString();
+
+            addHistory('Tile Calculator', `${L}×${W} ft, ${tileSize}" tiles`, `${Math.ceil(totalWithWaste)} tiles, ₹${Math.ceil(totalCost).toLocaleString()}`);
+            showToast('Tile calculation complete', 'fa-th-large');
+        }
+
+        // ─── 6. CEMENT BAG CALCULATOR ───
+        function calculateCement() {
+            const area = parseFloat(document.getElementById('cementArea').value) || 0;
+            const thick = parseFloat(document.getElementById('cementThickness').value) || 0;
+            const costPerBag = parseFloat(document.getElementById('cementBagCost').value) || 0;
+
+            if (area <= 0 || thick <= 0) {
+                showToast('Please enter valid values', 'fa-exclamation-triangle', 'error');
+                return;
+            }
+
+            const volFt3 = area * thick;
+            const volM3 = volFt3 * 0.0283168;
+            const bags = volM3 * 1.54 * 0.28;
+            const totalCost = bags * costPerBag;
+
+            document.getElementById('cementVolume').textContent = volFt3.toFixed(2) + ' ft³';
+            document.getElementById('cementBags').textContent = Math.ceil(bags) + ' bags (50kg)';
+            document.getElementById('cementCostTotal').textContent = '₹' + Math.ceil(totalCost).toLocaleString();
+
+            addHistory('Cement Bag', `${area} ft² × ${thick} ft`, `${Math.ceil(bags)} bags, ₹${Math.ceil(totalCost).toLocaleString()}`);
+            showToast('Cement bag calculation complete', 'fa-sack');
+        }
+
+        // ─── 7. PLASTER CALCULATOR ───
+        function calculatePlaster() {
+            const area = parseFloat(document.getElementById('plasterArea').value) || 0;
+            const thick = parseFloat(document.getElementById('plasterThick').value) || 0;
+            const mix = document.getElementById('plasterMix').value;
+            const cementCost = parseFloat(document.getElementById('plasterCementCost').value) || 0;
+            const sandCost = parseFloat(document.getElementById('plasterSandCost').value) || 0;
+
+            if (area <= 0 || thick <= 0) {
+                showToast('Please enter valid values', 'fa-exclamation-triangle', 'error');
+                return;
+            }
+
+            const thickFt = thick / 12;
+            const volFt3 = area * thickFt;
+            const volM3 = volFt3 * 0.0283168;
+            // mix: cement:sand
+            let cementParts, sandParts;
+            if (mix === '1:4') { cementParts = 1;
+                sandParts = 4; } else if (mix === '1:6') { cementParts = 1;
+                sandParts = 6; } else { cementParts = 1;
+                sandParts = 3; }
+
+            const totalParts = cementParts + sandParts;
+            const dryVolFactor = 1.33; // for plaster
+            const cementBags = (volM3 * dryVolFactor * cementParts / totalParts) / 0.0347;
+            const sandKg = (volM3 * dryVolFactor * sandParts / totalParts) * 1600;
+            const totalCost = (cementBags * cementCost) + (sandKg * sandCost);
+
+            document.getElementById('plasterVolume').textContent = volFt3.toFixed(2) + ' ft³';
+            document.getElementById('plasterCement').textContent = Math.ceil(cementBags) + ' bags';
+            document.getElementById('plasterSand').textContent = Math.ceil(sandKg) + ' kg';
+            document.getElementById('plasterCostTotal').textContent = '₹' + Math.ceil(totalCost).toLocaleString();
+
+            addHistory('Plaster Calculator', `${area} ft² × ${thick}"`, `${Math.ceil(cementBags)} bags, ${Math.ceil(sandKg)} kg, ₹${Math.ceil(totalCost).toLocaleString()}`);
+            showToast('Plaster calculation complete', 'fa-eraser');
+        }
+
+        // ─── 8. EXCAVATION CALCULATOR ───
+        function calculateExcavation() {
+            const L = parseFloat(document.getElementById('excavLength').value) || 0;
+            const W = parseFloat(document.getElementById('excavWidth').value) || 0;
+            const D = parseFloat(document.getElementById('excavDepth').value) || 0;
+            const costPerM3 = parseFloat(document.getElementById('excavCost').value) || 0;
+
+            if (L <= 0 || W <= 0 || D <= 0) {
+                showToast('Please enter valid dimensions', 'fa-exclamation-triangle', 'error');
+                return;
+            }
+
+            const volFt3 = L * W * D;
+            const volM3 = volFt3 * 0.0283168;
+            const totalCost = volM3 * costPerM3;
+
+            document.getElementById('excavFt3').textContent = volFt3.toFixed(2) + ' ft³';
+            document.getElementById('excavM3').textContent = volM3.toFixed(3) + ' m³';
+            document.getElementById('excavCostTotal').textContent = '₹' + Math.ceil(totalCost).toLocaleString();
+
+            addHistory('Excavation', `${L}×${W}×${D} ft`, `${volM3.toFixed(2)} m³, ₹${Math.ceil(totalCost).toLocaleString()}`);
+            showToast('Excavation calculation complete', 'fa-tractor');
+        }
+
+        // ─── 9. BLOCK CALCULATOR ───
+        function calculateBlock() {
+            const L = parseFloat(document.getElementById('blockLength').value) || 0;
+            const H = parseFloat(document.getElementById('blockHeight').value) || 0;
+            const blockSize = parseFloat(document.getElementById('blockSize').value) || 16;
+            const costPerBlock = parseFloat(document.getElementById('blockCost').value) || 0;
+
+            if (L <= 0 || H <= 0) {
+                showToast('Please enter valid wall dimensions', 'fa-exclamation-triangle', 'error');
+                return;
+            }
+
+            const area = L * H;
+            const blockLenFt = blockSize / 12;
+            const blockHtFt = 8 / 12;
+            const blockArea = blockLenFt * blockHtFt;
+            const blocksPerSqft = 1 / blockArea;
+            const totalBlocks = area * blocksPerSqft;
+            const totalCost = totalBlocks * costPerBlock;
+
+            document.getElementById('blockArea').textContent = area.toFixed(2) + ' ft²';
+            document.getElementById('blockPerSqft').textContent = blocksPerSqft.toFixed(3);
+            document.getElementById('blockTotal').textContent = Math.ceil(totalBlocks);
+            document.getElementById('blockCostTotal').textContent = '₹' + Math.ceil(totalCost).toLocaleString();
+
+            addHistory('Block Calculator', `${L}×${H} ft, ${blockSize}" blocks`, `${Math.ceil(totalBlocks)} blocks, ₹${Math.ceil(totalCost).toLocaleString()}`);
+            showToast('Block calculation complete', 'fa-border-all');
+        }
+
+        // ─── 10. UNIT CONVERTER ───
+        function calculateConverter() {
+            const type = document.getElementById('converterType').value;
+            const val = parseFloat(document.getElementById('converterValue').value) || 0;
+
+            if (val <= 0) {
+                showToast('Please enter a positive value', 'fa-exclamation-triangle', 'error');
+                return;
+            }
+
+            let result = 0;
+            let unit = '';
+            switch (type) {
+                case 'ft-m':
+                    result = val * 0.3048;
+                    unit = 'm';
+                    break;
+                case 'm-ft':
+                    result = val * 3.28084;
+                    unit = 'ft';
+                    break;
+                case 'in-cm':
+                    result = val * 2.54;
+                    unit = 'cm';
+                    break;
+                case 'sqft-sqm':
+                    result = val * 0.092903;
+                    unit = 'm²';
+                    break;
+                default:
+                    result = 0;
+            }
+
+            document.getElementById('converterResultVal').textContent = result.toFixed(4) + ' ' + unit;
+            addHistory('Unit Converter', `${type} → ${val}`, `${result.toFixed(4)} ${unit}`);
+            showToast('Conversion complete', 'fa-arrow-right-arrow-left');
+        }
+
+        // ─── KEYBOARD SHORTCUT: Enter to calculate ───
+        document.querySelectorAll('.calc-container').forEach(container => {
+            container.querySelectorAll('input').forEach(inp => {
+                inp.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        const calcId = container.id.replace('calc-', '');
+                        const map = {
+                            brick: calculateBrick,
+                            concrete: calculateConcrete,
+                            steel: calculateSteel,
+                            paint: calculatePaint,
+                            tile: calculateTile,
+                            cement: calculateCement,
+                            plaster: calculatePlaster,
+                            excavation: calculateExcavation,
+                            block: calculateBlock,
+                            converter: calculateConverter
+                        };
+                        if (map[calcId]) map[calcId]();
+                    }
+                });
+            });
+        });
+
+        // ─── TOOLTIPS ───
+        document.addEventListener('DOMContentLoaded', () => {
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            tooltipTriggerList.forEach(el => new bootstrap.Tooltip(el));
+        });
+
+        // ─── INIT ───
+        window.addEventListener('DOMContentLoaded', () => {
+            renderDashboard();
+            updateFavoriteStars();
+            // Run all calculators with defaults to show results
+            calculateBrick();
+            calculateConcrete();
+            calculateSteel();
+            calculatePaint();
+            calculateTile();
+            calculateCement();
+            calculatePlaster();
+            calculateExcavation();
+            calculateBlock();
+            calculateConverter();
+            // Set initial page title
+            const activeNav = document.querySelector('.nav-item.active');
+            if (activeNav) {
+                const calc = activeNav.dataset.calc;
+                pageTitle.innerHTML = `${activeNav.textContent.trim().replace(/[★☆]/g, '').trim()} <small>${getCalcSubtitle(calc)}</small>`;
+            }
+            showToast('Welcome! All calculators are ready.', 'fa-helmet-safety');
+        });
+
+        // ─── Expose functions to global scope ───
+        window.calculateBrick = calculateBrick;
+        window.calculateConcrete = calculateConcrete;
+        window.calculateSteel = calculateSteel;
+        window.calculatePaint = calculatePaint;
+        window.calculateTile = calculateTile;
+        window.calculateCement = calculateCement;
+        window.calculatePlaster = calculatePlaster;
+        window.calculateExcavation = calculateExcavation;
+        window.calculateBlock = calculateBlock;
+        window.calculateConverter = calculateConverter;
+        window.clearCalc = clearCalc;
+        window.resetDefaults = resetDefaults;
+        window.clearHistory = clearHistory;
+        window.deleteHistory = deleteHistory;
+        window.showToast = showToast;
+        window.navigateTo = navigateTo;
+        window.toggleFavorite = toggleFavorite;
+
+        console.log('🏗️ Construction Material Calculator Suite Pro (Professional Edition) loaded.');
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Previewer – Free Online Tool | ToolCraft</title>
+    <meta name="description" content="Write and preview Markdown in real‑time. See instant HTML rendering while you type. Perfect for READMEs, docs, and notes.">
+    <meta name="keywords" content="markdown previewer, markdown editor, markdown to html, readme preview, online markdown tool">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Markdown parser (lightweight CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root {
+            --primary: #2563eb; --primary-hover: #1d4ed8; --primary-light: #dbeafe;
+            --bg: #ffffff; --surface: #f8fafc; --text: #0f172a; --text-secondary: #475569;
+            --border: #e2e8f0; --radius-md: 16px; --radius-lg: 22px;
+            --shadow-lg: 0 16px 40px rgba(0,0,0,0.08);
+            --glass-bg: rgba(255,255,255,0.65); --glass-border: rgba(255,255,255,0.5);
+            --glass-blur: blur(14px); --transition: 0.25s cubic-bezier(0.2, 0.0, 0, 1.0);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(145deg, #f9fafc 0%, #f1f5f9 100%); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+        .tool-header { background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border-bottom: 1px solid var(--glass-border); padding: 1rem 0; position: sticky; top: 0; z-index: 100; }
+        .header-container { max-width: 1150px; margin: 0 auto; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; }
+        .back-link { display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 600; color: var(--primary); text-decoration: none; font-size: 0.95rem; transition: gap 0.2s; }
+        .back-link:hover { gap: 0.7rem; }
+        .site-logo { display: flex; align-items: center; gap: 0.5rem; font-weight: 800; font-size: 1.3rem; color: var(--text); text-decoration: none; }
+        .site-logo i { color: var(--primary); }
+        .main-container { flex: 1; display: flex; align-items: flex-start; justify-content: center; padding: 2rem; }
+        .tool-card { width: 100%; max-width: 1100px; background: var(--bg); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); padding: 2.5rem; display: flex; flex-direction: column; gap: 2rem; }
+        .editor-preview { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .pane { display: flex; flex-direction: column; gap: 0.5rem; }
+        .pane-label { font-weight: 600; font-size: 0.9rem; color: var(--text-secondary); }
+        textarea { width: 100%; min-height: 300px; border: 2px solid var(--border); border-radius: var(--radius-md); padding: 1rem; font-family: 'Consolas', monospace; font-size: 0.9rem; line-height: 1.5; resize: vertical; outline: none; background: var(--surface); color: var(--text); }
+        textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(37,99,235,0.06); }
+        .preview-box { min-height: 300px; border: 2px solid var(--border); border-radius: var(--radius-md); padding: 1rem; background: var(--surface); overflow-y: auto; color: var(--text); }
+        .preview-box h1, .preview-box h2, .preview-box h3 { margin: 0.5rem 0; }
+        .preview-box p { margin: 0.5rem 0; }
+        .preview-box code { background: #e2e8f0; padding: 0.2rem 0.4rem; border-radius: 4px; }
+        .preview-box pre { background: #0f172a; color: #f1f5f9; padding: 1rem; border-radius: 8px; overflow-x: auto; }
+        @media (max-width: 700px) {
+            .editor-preview { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header class="tool-header">
+        <div class="header-container">
+            <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Tools</a>
+            <a href="index.html" class="site-logo"><i class="fa-solid fa-toolbox"></i> ToolCraft</a>
+        </div>
+    </header>
+    <main class="main-container">
+        <div class="tool-card">
+            <h1 style="font-size:1.8rem; font-weight:800;"><i class="fa-brands fa-markdown" style="color:var(--primary);"></i> Markdown Previewer</h1>
+            <div class="editor-preview">
+                <div class="pane">
+                    <span class="pane-label">Markdown Input</span>
+                    <textarea id="markdownInput" placeholder="Type your Markdown here..."># Hello, World!
+**This** is *Markdown*.
+
+- list item
+1. numbered item
+
+`inline code`</textarea>
+                </div>
+                <div class="pane">
+                    <span class="pane-label">Preview</span>
+                    <div id="previewContent" class="preview-box"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+        const input = document.getElementById('markdownInput');
+        const preview = document.getElementById('previewContent');
+        function updatePreview() {
+            preview.innerHTML = marked.parse(input.value);
+        }
+        input.addEventListener('input', updatePreview);
+        // Initial render
+        updatePreview();
+    </script>
+</body>
+</html>

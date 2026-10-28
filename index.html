@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToolCraft - Free Online Tools</title>
+    <meta name="description" content="Free online tools for developers and everyday users. JSON formatter, image compressor, password generator and more.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <header class="navbar" id="navbar">
+        <div class="container nav-container">
+            <a href="#" class="nav-logo">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-toolbox"></i>
+                </div>
+                <span>Tool<span class="logo-highlight">Craft</span></span>
+            </a>
+            <nav class="nav-links" id="navLinks">
+                <a href="#home" class="nav-link active">
+                    <i class="fa-solid fa-house"></i> Home
+                </a>
+                <a href="#categories" class="nav-link">
+                    <i class="fa-solid fa-th-large"></i> Categories
+                </a>
+                <a href="#popular" class="nav-link">
+                    <i class="fa-solid fa-fire"></i> Popular
+                </a>
+                <a href="#latest" class="nav-link">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Latest
+                </a>
+                <a href="#about" class="nav-link">
+                    <i class="fa-solid fa-circle-info"></i> About
+                </a>
+            </nav>
+            <div class="nav-actions">
+                <button class="btn-icon theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                    <i class="fa-solid fa-moon" id="themeIcon"></i>
+                </button>
+                <a href="#tools" class="nav-cta">
+                    <i class="fa-solid fa-rocket"></i> Get Started
+                </a>
+                <button class="btn-icon hamburger" id="hamburger" aria-label="Menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main id="home">
+
+        <!-- ===== HERO SECTION ===== -->
+        <section class="hero" id="hero" style="
+            background-image: url(https://images.unsplash.com/photo-1557682250-33bd709cbe85?w=1920&q=80);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 85vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin: 0;
+            padding: 0;
+        ">
+            <!-- Overlay -->
+            <div style="
+                position: absolute;
+                top: 0; left: 0; right: 0; bottom: 0;
+                background: rgba(26, 46, 26, 0.78);
+                z-index: 1;
+            "></div>
+
+            <!-- Hero Content -->
+            <div class="container hero-container" style="
+                position: relative;
+                z-index: 2;
+                text-align: center;
+                max-width: 800px;
+                padding: 2rem;
+            ">
+                <span class="hero-badge" style="
+                    background: rgba(201, 168, 76, 0.20);
+                    color: #f5d76e;
+                    border: 1px solid rgba(201, 168, 76, 0.35);
+                    padding: 0.5rem 1.5rem;
+                    border-radius: 50px;
+                    font-weight: 600;
+                    font-size: 0.85rem;
+                    letter-spacing: 0.5px;
+                    margin-bottom: 1.5rem;
+                    display: inline-block;
+                ">
+                    <i class="fa-solid fa-sparkles"></i> 50+ Free Tools
+                </span>
+                
+                <h1 class="hero-heading" style="
+                    color: white;
+                    font-size: 3.5rem;
+                    font-weight: 900;
+                    line-height: 1.1;
+                    margin-bottom: 1.2rem;
+                    letter-spacing: -0.03em;
+                ">
+                    Free Online Tools for <span style="color: #f5d76e;">Everyone</span>
+                </h1>
+                
+                <p class="hero-subtitle" style="
+                    color: rgba(255,255,255,0.88);
+                    font-size: 1.15rem;
+                    line-height: 1.6;
+                    margin-bottom: 2.5rem;
+                    max-width: 600px;
+                    margin-left: auto;
+                    margin-right: auto;
+                ">
+                    Boost your productivity with our collection of free online tools. 
+                    No registration, no ads, no hassle — just pure utility at your fingertips.
+                </p>
+
+                <!-- Search Bar -->
+                <div class="search-wrapper" style="max-width: 560px; margin: 0 auto 3rem;">
+                    <div class="search-bar" style="
+                        background: rgba(255,255,255,0.10);
+                        backdrop-filter: blur(20px);
+                        -webkit-backdrop-filter: blur(20px);
+                        border: 1.5px solid rgba(201, 168, 76, 0.35);
+                        border-radius: 50px;
+                        padding: 0.4rem 0.4rem 0.4rem 1.5rem;
+                        display: flex;
+                        align-items: center;
+                    ">
+                        <i class="fa-solid fa-magnifying-glass search-icon" style="color: rgba(255,255,255,0.7);"></i>
+                        <input 
+                            type="text" 
+                            id="searchInput" 
+                            class="search-input" 
+                            placeholder="Search for a tool... (e.g., JSON, URL, Image)" 
+                            autocomplete="off" 
+                            style="
+                                flex: 1;
+                                border: none;
+                                background: transparent;
+                                padding: 0.8rem 0.8rem;
+                                font-size: 1rem;
+                                color: white;
+                                outline: none;
+                            "
+                        >
+                        <button class="search-btn" id="searchBtn" style="
+                            padding: 0.7rem 1.8rem;
+                            background: #6B5B2E;
+                            color: #ffffff;
+                            border: 2px solid rgba(201, 168, 76, 0.4);
+                            border-radius: 50px;
+                            font-weight: 700;
+                            font-size: 0.95rem;
+                            cursor: pointer;
+                            font-family: inherit;
+                            transition: all 0.3s ease;
+                            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                        "
+                        onmouseover="this.style.background='#4a3d1f'; this.style.borderColor='#f5d76e'; this.style.transform='scale(1.02)';"
+                        onmouseout="this.style.background='#6B5B2E'; this.style.borderColor='rgba(201, 168, 76, 0.4)'; this.style.transform='scale(1)';"
+                        >Search</button>
+                    </div>
+                    <div class="search-suggestions" id="searchSuggestions"></div>
+                </div>
+
+                <!-- Stats -->
+                <div class="hero-stats" style="
+                    display: flex;
+                    gap: 3rem;
+                    justify-content: center;
+                    flex-wrap: wrap;
+                ">
+                    <div class="stat-item" style="text-align: center;">
+                        <span class="stat-number" style="display: block; font-size: 2.2rem; font-weight: 800; color: #f5d76e;">50+</span>
+                        <span class="stat-label" style="font-size: 0.8rem; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 1px;">Tools</span>
+                    </div>
+                    <div class="stat-item" style="text-align: center;">
+                        <span class="stat-number" style="display: block; font-size: 2.2rem; font-weight: 800; color: #f5d76e;">10M+</span>
+                        <span class="stat-label" style="font-size: 0.8rem; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 1px;">Users</span>
+                    </div>
+                    <div class="stat-item" style="text-align: center;">
+                        <span class="stat-number" style="display: block; font-size: 2.2rem; font-weight: 800; color: #f5d76e;">100%</span>
+                        <span class="stat-label" style="font-size: 0.8rem; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 1px;">Free</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== CATEGORIES SECTION ===== -->
+        <section class="categories section-padding" id="categories">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Explore</span>
+                    <h2 class="section-title">Tool Categories</h2>
+                    <p class="section-desc">Find the right tool for your task.</p>
+                </div>
+                <div class="categories-grid">
+                    <div class="category-card" data-category="text">
+                        <div class="category-icon-wrapper"><i class="fa-solid fa-align-left"></i></div>
+                        <h3>Text Tools</h3>
+                        <p>8 tools</p>
+                    </div>
+                    <div class="category-card" data-category="image">
+                        <div class="category-icon-wrapper"><i class="fa-solid fa-image"></i></div>
+                        <h3>Image Tools</h3>
+                        <p>6 tools</p>
+                    </div>
+                    <div class="category-card" data-category="developer">
+                        <div class="category-icon-wrapper"><i class="fa-solid fa-code"></i></div>
+                        <h3>Developer Tools</h3>
+                        <p>12 tools</p>
+                    </div>
+                    <div class="category-card" data-category="converter">
+                        <div class="category-icon-wrapper"><i class="fa-solid fa-arrows-rotate"></i></div>
+                        <h3>Converters</h3>
+                        <p>10 tools</p>
+                    </div>
+                    <div class="category-card" data-category="calculator">
+                        <div class="category-icon-wrapper"><i class="fa-solid fa-calculator"></i></div>
+                        <h3>Calculators</h3>
+                        <p>7 tools</p>
+                    </div>
+                    <div class="category-card" data-category="security">
+                        <div class="category-icon-wrapper"><i class="fa-solid fa-shield-halved"></i></div>
+                        <h3>Security Tools</h3>
+                        <p>9 tools</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== POPULAR TOOLS ===== -->
+		<article class="tool-card" 
+         data-tool-name="Construction Material Calculator" 
+         data-tool-category="calculator" 
+         data-tool-tags="construction calculator brick concrete steel paint tile cement plaster excavation block unit converter">
+		<div class="tool-card-header">
+        <div class="tool-icon-box">
+            <i class="fa-solid fa-helmet-safety"></i>
+        </div>
+        <span class="tool-badge new-badge">
+            <i class="fa-solid fa-star"></i> New
+        </span>
+		</div>
+		<div style="width: 100%; height: 140px; background: linear-gradient(135deg, #2563eb, #1e40af); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 0.8rem;">
+		<i class="fa-solid fa-helmet-safety" style="font-size: 3rem; color: white;"></i>
+		</div>
+		<h3 class="tool-title">Construction Calculator Suite</h3>
+		<p class="tool-desc">
+        10+ professional calculators: bricks, concrete, steel, paint, tile, cement, plaster, excavation, blocks & unit converter — all with cost estimation.
+		</p>
+		<a href="construction-calculator.html" class="tool-link">
+        Use Tool <i class="fa-solid fa-arrow-right"></i>
+		</a>
+		</article>
+        <section class="popular-tools section-padding bg-alt" id="popular">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Most Used</span>
+                    <h2 class="section-title">Popular Tools</h2>
+                    <p class="section-desc">Trusted by millions.</p>
+                </div>
+                <div class="tools-grid" id="popularToolsGrid">
+                    <!-- JSON Formatter -->
+                    <article class="tool-card" data-tool-name="JSON Formatter & Validator" data-tool-category="developer" data-tool-tags="json formatter validator beautify">
+                        <div class="tool-card-header">
+                            <div class="tool-icon-box"><i class="fa-solid fa-brackets-curly"></i></div>
+                            <span class="tool-badge popular-badge"><i class="fa-solid fa-fire"></i> Popular</span>
+                        </div>
+                        <h3>JSON Formatter & Validator</h3>
+                        <p>Beautify, validate, and format your JSON data instantly.</p>
+                        <a href="json-formatter.html" class="tool-link">Use Tool <i class="fa-solid fa-arrow-right"></i></a>
+                    </article>
+
+                    <!-- Image Resizer -->
+                    <article class="tool-card" data-tool-name="Image Resizer" data-tool-category="image" data-tool-tags="resize image dimensions width height aspect ratio">
+                        <div class="tool-card-header">
+                            <div class="tool-icon-box"><i class="fa-solid fa-expand"></i></div>
+                            <span class="tool-badge popular-badge"><i class="fa-solid fa-fire"></i> Popular</span>
+                        </div>
+                        <h3>Image Resizer</h3>
+                        <p>Resize images by exact pixels, lock aspect ratio, and download instantly.</p>
+                        <a href="image-resizer.html" class="tool-link">Use Tool <i class="fa-solid fa-arrow-right"></i></a>
+                    </article>
+
+                    <!-- URL Encoder -->
+                    <article class="tool-card" data-tool-name="URL Encoder / Decoder" data-tool-category="developer" data-tool-tags="url encode decode percent encoding">
+                        <div class="tool-card-header">
+                            <div class="tool-icon-box"><i class="fa-solid fa-link"></i></div>
+                            <span class="tool-badge popular-badge"><i class="fa-solid fa-fire"></i> Popular</span>
+                        </div>
+                        <h3>URL Encoder / Decoder</h3>
+                        <p>Encode or decode URLs safely.</p>
+                        <a href="url-encoder-decoder.html" class="tool-link">Use Tool <i class="fa-solid fa-arrow-right"></i></a>
+                    </article>
+
+                    <!-- Image Compressor -->
+                    <article class="tool-card" data-tool-name="Image Compressor" data-tool-category="image" data-tool-tags="image compress resize jpg png">
+                        <div class="tool-card-header">
+                            <div class="tool-icon-box"><i class="fa-solid fa-compress"></i></div>
+                            <span class="tool-badge popular-badge"><i class="fa-solid fa-fire"></i> Popular</span>
+                        </div>
+                        <h3>Image Compressor</h3>
+                        <p>Compress images without losing quality.</p>
+                        <a href="image-compressor.html" class="tool-link">Use Tool <i class="fa-solid fa-arrow-right"></i></a>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== LATEST TOOLS ===== -->
+        <section class="latest-tools section-padding" id="latest">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">New Arrivals</span>
+                    <h2 class="section-title">Latest Tools</h2>
+                    <p class="section-desc">Freshly added tools.</p>
+                </div>
+                <div class="tools-grid" id="latestToolsGrid">
+                    <article class="tool-card" data-tool-name="Markdown Previewer" data-tool-category="developer" data-tool-tags="markdown preview md render">
+                        <div class="tool-card-header">
+                            <div class="tool-icon-box"><i class="fa-brands fa-markdown"></i></div>
+                            <span class="tool-badge new-badge"><i class="fa-solid fa-star"></i> New</span>
+                        </div>
+                        <h3>Markdown Previewer</h3>
+                        <p>Write and preview Markdown in real-time.</p>
+                        <a href="markdown-previewer.html" class="tool-link">Use Tool <i class="fa-solid fa-arrow-right"></i></a>
+                    </article>
+
+                    <article class="tool-card" data-tool-name="Advanced Color Picker" data-tool-category="image" data-tool-tags="color picker hex rgb hsl">
+                        <div class="tool-card-header">
+                            <div class="tool-icon-box"><i class="fa-solid fa-palette"></i></div>
+                            <span class="tool-badge new-badge"><i class="fa-solid fa-star"></i> New</span>
+                        </div>
+                        <h3>Advanced Color Picker</h3>
+                        <p>Pick, convert, and generate color palettes.</p>
+                        <a href="advanced-color-picker.html" class="tool-link">Use Tool <i class="fa-solid fa-arrow-right"></i></a>
+                    </article>
+
+                    <article class="tool-card" data-tool-name="Barcode Generator" data-tool-category="converter" data-tool-tags="barcode generator CODE128 EAN13 UPC">
+                        <div class="tool-card-header">
+                            <div class="tool-icon-box"><i class="fa-solid fa-barcode"></i></div>
+                            <span class="tool-badge new-badge"><i class="fa-solid fa-star"></i> New</span>
+                        </div>
+                        <h3>Barcode Generator</h3>
+                        <p>Create barcodes in CODE128, EAN‑13, UPC, and more. Download as PNG.</p>
+                        <a href="barcode-generator.html" class="tool-link">Use Tool <i class="fa-solid fa-arrow-right"></i></a>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== ABOUT SECTION ===== -->
+        <section class="about section-padding bg-alt" id="about">
+            <div class="container about-content">
+                <div class="about-text">
+                    <span class="section-tag">Why ToolCraft</span>
+                    <h2 class="section-title">Built for speed, simplicity & privacy</h2>
+                    <p>All tools run directly in your browser. No data leaves your device.</p>
+                    <ul class="about-features">
+                        <li><i class="fa-solid fa-circle-check"></i> Client-side processing</li>
+                        <li><i class="fa-solid fa-circle-check"></i> No data collection</li>
+                        <li><i class="fa-solid fa-circle-check"></i> Always free</li>
+                    </ul>
+                </div>
+                <div class="about-illustration">
+                    <div class="illustration-circle"><i class="fa-solid fa-shield-halved"></i></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== NEWSLETTER ===== -->
+        <section class="newsletter section-padding">
+            <div class="container">
+                <div class="newsletter-card">
+                    <span class="section-tag">Stay Updated</span>
+                    <h2>Subscribe to Our Newsletter</h2>
+                    <p>Get notified when we launch new tools.</p>
+                    <form id="newsletterForm">
+                        <div class="newsletter-input-group">
+                            <i class="fa-solid fa-envelope"></i>
+                            <input type="email" id="newsletterEmail" placeholder="your@email.com" required>
+                            <button type="submit" class="newsletter-btn">Subscribe <i class="fa-solid fa-paper-plane"></i></button>
+                        </div>
+                        <p class="newsletter-message" id="newsletterMessage"></p>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <a href="#" class="footer-logo">
+                        <i class="fa-solid fa-toolbox"></i> ToolCraft
+                    </a>
+                    <p>Free online tools for everyone.</p>
+                    <div class="footer-socials">
+                        <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+                        <a href="#"><i class="fa-brands fa-github"></i></a>
+                        <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#categories">Categories</a></li>
+                        <li><a href="#popular">Popular</a></li>
+                        <li><a href="#latest">Latest</a></li>
+                        <li><a href="#about">About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>00-92-3041395497</h4>
+                    <ul class="footer-links">
+                        <li><i class="fa-regular fa-envelope" style="color: #c9a84c; margin-right: 8px;"></i> muzamilhasnat9@gmail.com</li>
+                        <li><i class="fa-regular fa-clock" style="color: #c9a84c; margin-right: 8px;"></i> 24/7 Available</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; <span id="currentYear"></span> ToolCraft. All rights reserved.</p>
+                <p style="margin-top: 4px; font-size: 0.8rem; opacity: 0.6;">Built with <i class="fa-solid fa-heart" style="color: #c9a84c;"></i> for developers</p>
+            </div>
+        </div>
+    </footer>
+	<script>
+    // ===== CATEGORIES CLICK HANDLER =====
+    document.addEventListener('DOMContentLoaded', function() {
+        const categoryCards = document.querySelectorAll('.category-card');
+        const allToolCards = document.querySelectorAll('.tool-card');
+        const popularSection = document.getElementById('popular');
+        const latestSection = document.getElementById('latest');
+
+        // Get all tools from both sections
+        const allTools = [...document.querySelectorAll('.tool-card')];
+
+        categoryCards.forEach(card => {
+            card.addEventListener('click', function() {
+                // Remove active class from all categories
+                categoryCards.forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked category
+                this.classList.add('active');
+
+                const category = this.getAttribute('data-category');
+
+                // If 'all' category or no category filter - show all
+                if (category === 'all' || !category) {
+                    allTools.forEach(tool => {
+                        tool.style.display = 'flex';
+                        setTimeout(() => {
+                            tool.style.opacity = '1';
+                            tool.style.transform = 'scale(1)';
+                        }, 50);
+                    });
+                    return;
+                }
+
+                // Filter tools based on category
+                allTools.forEach(tool => {
+                    const toolCategory = tool.getAttribute('data-tool-category');
+                    if (toolCategory === category) {
+                        tool.style.display = 'flex';
+                        setTimeout(() => {
+                            tool.style.opacity = '1';
+                            tool.style.transform = 'scale(1)';
+                        }, 50);
+                    } else {
+                        tool.style.opacity = '0';
+                        tool.style.transform = 'scale(0.8)';
+                        setTimeout(() => {
+                            tool.style.display = 'none';
+                        }, 300);
+                    }
+                });
+
+                // Scroll to popular section smoothly
+                if (popularSection) {
+                    popularSection.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                }
+            });
+        });
+
+        // ===== RESET BUTTON (Optional) =====
+        // Add a reset filter button in categories header
+        const sectionHeader = document.querySelector('.categories .section-header');
+        if (sectionHeader) {
+            const resetBtn = document.createElement('button');
+            resetBtn.className = 'reset-filter-btn';
+            resetBtn.innerHTML = '<i class="fa-solid fa-rotate-left"></i> Show All';
+            resetBtn.style.cssText = `
+                display: inline-block;
+                margin-top: 12px;
+                background: transparent;
+                border: 2px solid #c9a84c;
+                color: #c9a84c;
+                padding: 6px 20px;
+                border-radius: 50px;
+                font-weight: 600;
+                font-size: 0.85rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                font-family: inherit;
+            `;
+            resetBtn.addEventListener('mouseenter', () => {
+                resetBtn.style.background = '#c9a84c';
+                resetBtn.style.color = '#1a2e1a';
+            });
+            resetBtn.addEventListener('mouseleave', () => {
+                resetBtn.style.background = 'transparent';
+                resetBtn.style.color = '#c9a84c';
+            });
+            resetBtn.addEventListener('click', function() {
+                // Remove active from all categories
+                categoryCards.forEach(c => c.classList.remove('active'));
+                // Show all tools
+                allTools.forEach(tool => {
+                    tool.style.display = 'flex';
+                    tool.style.opacity = '1';
+                    tool.style.transform = 'scale(1)';
+                });
+            });
+            // Append after section-desc
+            const desc = sectionHeader.querySelector('.section-desc');
+            if (desc) {
+                desc.after(resetBtn);
+            } else {
+                sectionHeader.appendChild(resetBtn);
+            }
+        }
+    });
+</script>
+
+    <!-- ===== BACK TO TOP ===== -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">
+        <i class="fa-solid fa-chevron-up"></i>
+    </button>
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        // ===== HAMBURGER MENU =====
+        document.getElementById('hamburger').addEventListener('click', function() {
+            document.getElementById('navLinks').classList.toggle('open');
+        });
+
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('navLinks').classList.remove('open');
+            });
+        });
+
+        // ===== THEME TOGGLE =====
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const html = document.documentElement;
+
+        // Check saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+
+        function updateThemeIcon(theme) {
+            themeIcon.className = theme === 'light' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+        }
+
+        // ===== BACK TO TOP =====
+        const backToTop = document.getElementById('backToTop');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 400) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+        });
+
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // ===== SEARCH SUGGESTIONS =====
+        const searchInput = document.getElementById('searchInput');
+        const suggestions = document.getElementById('searchSuggestions');
+
+        const toolsList = [
+            'JSON Formatter & Validator',
+            'Image Resizer',
+            'Image Compressor',
+            'URL Encoder / Decoder',
+            'Markdown Previewer',
+            'Advanced Color Picker',
+            'Barcode Generator',
+            'Password Generator',
+            'QR Code Generator',
+            'CSS Minifier',
+            'HTML Beautifier',
+            'Base64 Encoder'
+        ];
+
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+            if (query.length < 1) {
+                suggestions.classList.remove('active');
+                return;
+            }
+            const filtered = toolsList.filter(tool => 
+                tool.toLowerCase().includes(query)
+            );
+            if (filtered.length > 0) {
+                suggestions.innerHTML = filtered.map(tool => 
+                    `<div class="suggestion-item">${tool}</div>`
+                ).join('');
+                suggestions.classList.add('active');
+            } else {
+                suggestions.classList.remove('active');
+            }
+        });
+
+        suggestions.addEventListener('click', function(e) {
+            if (e.target.classList.contains('suggestion-item')) {
+                searchInput.value = e.target.textContent;
+                suggestions.classList.remove('active');
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.search-wrapper')) {
+                suggestions.classList.remove('active');
+            }
+        });
+
+        // ===== NEWSLETTER =====
+        document.getElementById('newsletterForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('newsletterEmail').value;
+            const msg = document.getElementById('newsletterMessage');
+            if (email) {
+                msg.textContent = '✅ Thank you for subscribing!';
+                msg.style.color = '#2e7d32';
+                this.reset();
+                setTimeout(() => { msg.textContent = ''; }, 4000);
+            }
+        });
+
+        // ===== CURRENT YEAR =====
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // ===== NAVBAR SCROLL EFFECT =====
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 20) {
+                navbar.style.boxShadow = '0 8px 30px rgba(0,0,0,0.08)';
+            } else {
+                navbar.style.boxShadow = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

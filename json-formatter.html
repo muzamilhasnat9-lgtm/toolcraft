@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>JSON Formatter & Validator – Free Online Tool | ToolCraft</title>
+    <meta name="description" content="Free online JSON formatter, validator, beautifier & minifier. Format messy JSON, validate syntax, and copy clean output instantly.">
+    <meta name="keywords" content="json formatter, json validator, json beautifier, json minifier, format json, online json tool">
+    <meta name="author" content="ToolCraft">
+    <meta name="robots" content="index, follow">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #dbeafe;
+            --bg: #ffffff;
+            --surface: #f8fafc;
+            --text: #0f172a;
+            --text-secondary: #475569;
+            --border: #e2e8f0;
+            --radius-md: 16px;
+            --radius-lg: 22px;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
+            --shadow-md: 0 6px 20px rgba(0,0,0,0.07);
+            --shadow-lg: 0 16px 40px rgba(0,0,0,0.08);
+            --glass-bg: rgba(255,255,255,0.65);
+            --glass-border: rgba(255,255,255,0.5);
+            --glass-blur: blur(14px);
+            --transition: 0.25s cubic-bezier(0.2, 0.0, 0, 1.0);
+            --success: #16a34a;
+            --error: #dc2626;
+            --warning: #f59e0b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(145deg, #f9fafc 0%, #f1f5f9 100%);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ----- Header ----- */
+        .tool-header {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-container {
+            max-width: 1150px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: gap 0.2s;
+        }
+        .back-link:hover { gap: 0.7rem; }
+        .back-link i { font-size: 0.9rem; }
+        .site-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 800;
+            font-size: 1.3rem;
+            color: var(--text);
+            text-decoration: none;
+        }
+        .site-logo i { color: var(--primary); }
+
+        /* ----- Main Card ----- */
+        .main-container {
+            flex: 1;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .tool-card {
+            width: 100%;
+            max-width: 950px;
+            background: var(--bg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg), 0 0 0 1px rgba(0,0,0,0.02);
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* ----- Heading ----- */
+        .tool-heading {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 1.7rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+        .tool-heading i { color: var(--primary); font-size: 1.6rem; }
+
+        /* ----- Textarea ----- */
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+        .input-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .char-count {
+            font-weight: 400;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        textarea {
+            width: 100%;
+            min-height: 220px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            resize: vertical;
+            outline: none;
+            transition: border-color var(--transition);
+            background: var(--surface);
+            color: var(--text);
+        }
+        textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.06);
+        }
+        textarea.output {
+            background: #f9fafb;
+        }
+
+        /* ----- Buttons Row ----- */
+        .btn-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.7rem 1.5rem;
+            border-radius: 40px;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+            font-family: inherit;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(37, 99, 235, 0.25);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid var(--border);
+            color: var(--text);
+        }
+        .btn-outline:hover {
+            background: var(--surface);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .btn-success {
+            background: var(--success);
+            color: white;
+            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+        }
+        .btn-success:hover {
+            background: #15803d;
+            transform: translateY(-1px);
+        }
+        .btn-warning {
+            background: var(--warning);
+            color: #0f172a;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+        .btn-warning:hover {
+            background: #d97706;
+            transform: translateY(-1px);
+        }
+
+        /* ----- Status Message ----- */
+        .status-msg {
+            font-size: 0.85rem;
+            font-weight: 500;
+            min-height: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .status-msg.success { color: var(--success); }
+        .status-msg.error { color: var(--error); }
+        .status-msg.info { color: var(--primary); }
+
+        /* ----- Responsive ----- */
+        @media (max-width: 700px) {
+            .tool-card { padding: 1.5rem; }
+            .btn-row { flex-direction: column; }
+            .btn { justify-content: center; width: 100%; }
+            textarea { min-height: 180px; }
+            .tool-heading { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="tool-header">
+        <div class="header-container">
+            <a href="index.html" class="back-link">
+                <i class="fa-solid fa-arrow-left"></i> Back to Tools
+            </a>
+            <a href="index.html" class="site-logo">
+                <i class="fa-solid fa-toolbox"></i> ToolCraft
+            </a>
+        </div>
+    </header>
+
+    <!-- Main -->
+    <main class="main-container">
+        <div class="tool-card">
+            <h1 class="tool-heading">
+                <i class="fa-solid fa-brackets-curly"></i> JSON Formatter & Validator
+            </h1>
+
+            <!-- Input -->
+            <div class="input-group">
+                <span class="input-label">
+                    Input JSON
+                    <span class="char-count" id="inputCount">0 characters</span>
+                </span>
+                <textarea id="jsonInput" placeholder='Paste your JSON here... e.g. {"name":"John","age":30}'></textarea>
+            </div>
+
+            <!-- Buttons -->
+            <div class="btn-row">
+                <button class="btn btn-primary" id="formatBtn">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Beautify / Format
+                </button>
+                <button class="btn btn-warning" id="minifyBtn">
+                    <i class="fa-solid fa-compress"></i> Minify
+                </button>
+                <button class="btn btn-outline" id="validateBtn">
+                    <i class="fa-solid fa-circle-check"></i> Validate
+                </button>
+                <button class="btn btn-success" id="copyBtn">
+                    <i class="fa-solid fa-copy"></i> Copy Output
+                </button>
+                <button class="btn btn-outline" id="clearBtn">
+                    <i class="fa-solid fa-trash-can"></i> Clear
+                </button>
+            </div>
+
+            <!-- Status -->
+            <div class="status-msg" id="statusMsg"></div>
+
+            <!-- Output -->
+            <div class="input-group">
+                <span class="input-label">
+                    Output
+                    <span class="char-count" id="outputCount">0 characters</span>
+                </span>
+                <textarea id="jsonOutput" class="output" placeholder="Formatted JSON will appear here..." readonly></textarea>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        (function() {
+            const inputEl = document.getElementById('jsonInput');
+            const outputEl = document.getElementById('jsonOutput');
+            const statusEl = document.getElementById('statusMsg');
+            const inputCount = document.getElementById('inputCount');
+            const outputCount = document.getElementById('outputCount');
+
+            // Update character counts
+            inputEl.addEventListener('input', () => {
+                inputCount.textContent = inputEl.value.length + ' characters';
+            });
+            function updateOutputCount() {
+                outputCount.textContent = outputEl.value.length + ' characters';
+            }
+
+            // Show status
+            function showStatus(msg, type) {
+                statusEl.textContent = msg;
+                statusEl.className = 'status-msg ' + type;
+                if (type === 'success' || type === 'info') {
+                    setTimeout(() => { statusEl.textContent = ''; statusEl.className = 'status-msg'; }, 4000);
+                }
+            }
+
+            // Validate JSON
+            function validateJSON(str) {
+                try {
+                    const parsed = JSON.parse(str);
+                    return { valid: true, data: parsed, error: null };
+                } catch (e) {
+                    return { valid: false, data: null, error: e.message };
+                }
+            }
+
+            // Beautify / Format
+            document.getElementById('formatBtn').addEventListener('click', () => {
+                const raw = inputEl.value.trim();
+                if (!raw) {
+                    showStatus('Please paste some JSON first.', 'error');
+                    return;
+                }
+                const result = validateJSON(raw);
+                if (result.valid) {
+                    outputEl.value = JSON.stringify(result.data, null, 2);
+                    showStatus('✅ JSON formatted successfully!', 'success');
+                } else {
+                    outputEl.value = '';
+                    showStatus('❌ Invalid JSON: ' + result.error, 'error');
+                }
+                updateOutputCount();
+            });
+
+            // Minify
+            document.getElementById('minifyBtn').addEventListener('click', () => {
+                const raw = inputEl.value.trim();
+                if (!raw) {
+                    showStatus('Please paste some JSON first.', 'error');
+                    return;
+                }
+                const result = validateJSON(raw);
+                if (result.valid) {
+                    outputEl.value = JSON.stringify(result.data);
+                    showStatus('✅ JSON minified!', 'success');
+                } else {
+                    outputEl.value = '';
+                    showStatus('❌ Invalid JSON: ' + result.error, 'error');
+                }
+                updateOutputCount();
+            });
+
+            // Validate Only
+            document.getElementById('validateBtn').addEventListener('click', () => {
+                const raw = inputEl.value.trim();
+                if (!raw) {
+                    showStatus('Please paste some JSON first.', 'error');
+                    return;
+                }
+                const result = validateJSON(raw);
+                if (result.valid) {
+                    showStatus('✅ Valid JSON! Structure is correct.', 'success');
+                    // Auto beautify on validate too
+                    outputEl.value = JSON.stringify(result.data, null, 2);
+                } else {
+                    showStatus('❌ Invalid JSON: ' + result.error, 'error');
+                    outputEl.value = '';
+                }
+                updateOutputCount();
+            });
+
+            // Copy Output
+            document.getElementById('copyBtn').addEventListener('click', () => {
+                if (!outputEl.value.trim()) {
+                    showStatus('Nothing to copy. Format or validate first.', 'error');
+                    return;
+                }
+                navigator.clipboard.writeText(outputEl.value).then(() => {
+                    showStatus('📋 Copied to clipboard!', 'success');
+                }).catch(() => {
+                    outputEl.select();
+                    document.execCommand('copy');
+                    showStatus('📋 Copied! (fallback method)', 'info');
+                });
+            });
+
+            // Clear All
+            document.getElementById('clearBtn').addEventListener('click', () => {
+                inputEl.value = '';
+                outputEl.value = '';
+                statusEl.textContent = '';
+                statusEl.className = 'status-msg';
+                inputCount.textContent = '0 characters';
+                outputCount.textContent = '0 characters';
+                inputEl.focus();
+            });
+
+            // Optional: Load sample JSON
+            inputEl.value = '';
+            inputCount.textContent = '0 characters';
+            outputCount.textContent = '0 characters';
+        })();
+    </script>
+</body>
+</html>
